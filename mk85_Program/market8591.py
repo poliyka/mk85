@@ -15,14 +15,8 @@ from os.path import join
 # //MARK: GUI surface
 
 
-class App:
-    def __init__(self, f1_search, f2_list, f3_log, f4_proxies, f5_lb01, f6_lb02):
-        self.f1_search = f1_search
-        self.f2_list = f2_list
-        self.f3_log = f3_log
-        self.f4_proxies = f4_proxies
-        self.f5_lb01 = f5_lb01
-        self.f6_lb02 = f6_lb02
+class App_start:
+    def __init__(self):
         self.games = []
         self.servers = []
         self.items = []
@@ -35,11 +29,9 @@ class App:
 
         self.background_label()
         self.titleLabel()
+        self.button()
         self.entrySearchGame()
-        self.botton_Search()
-        self.botton_getproxy()
-        self.optinMenu(self.games, self.servers, self.items)
-        self.botton_send()
+        self.optionMenu(self.games, self.servers, self.items)
         self.listbox()
         self.log_place()
         self.entrySearchItem()
@@ -58,9 +50,9 @@ class App:
         self.background_label01 = tk.Label(f1_search, image=img_icon)
         self.background_label01.place(x=0, y=0, relwidth=1, relheight=1)
 
-    # //MARK: optinMenu_GUI
+    # //MARK: optionMenu_GUI
 
-    def optinMenu(self, games, server, item):
+    def optionMenu(self, games, server, item):
         self.var01 = StringVar()
         self.var02 = StringVar()
         self.var03 = StringVar()
@@ -71,10 +63,8 @@ class App:
         # ttk.OptionMenu(介面,存取之變量,初始文字,*list,...,command = 呼叫函式)
         self.omGames = ttk.OptionMenu(
             f1_search, self.var01, '請選擇遊戲', *games, direction='below', command=self.saveGame_Option)
-
         self.omServers = ttk.OptionMenu(
             f1_search, self.var02, '請選擇伺服器', *server, direction='below', command=self.saveServer_Option)
-
         self.omItems = ttk.OptionMenu(
             f1_search, self.var03, '請選擇物品', *item, direction='below', command=self.saveItem_Option)
 
@@ -84,6 +74,7 @@ class App:
         self.omGames.config(state='disabled')
         self.btnSearch.config(state='disabled')
         self.btnSend.config(state='disabled')
+
         t = threading.Thread(target=self.getOtherList, args=(gameOption,))
         t.start()
         # 取得代號
@@ -108,6 +99,7 @@ class App:
         self.omServers.set_menu(
             self.servers[0][1], *(i[1] for i in self.servers))
         self.omItems.set_menu(self.items[0][1], *(i[1] for i in self.items))
+
         self.omGames.config(state='active')
         self.btnSearch.config(state='active')
         self.btnSend.config(state='active')
@@ -124,12 +116,12 @@ class App:
         self.varList = tk.StringVar()
         self.varList.set([])
         self.lb = tk.Listbox(f2_list, listvariable=self.varList, font=(
-            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none')
+            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none',justify='right')
 
         self.varList1 = tk.StringVar()
         self.varList1.set([])
         self.lb1 = tk.Listbox(f2_list, listvariable=self.varList1, font=(
-            '標楷體', 12), selectmode='SINGLE', bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none')
+            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none',justify='right')
         self.lb.bind('<Double-Button-1>', self.clickLink)
         self.lb1.bind('<Double-Button-1>', self.clickLink1)
 
@@ -141,7 +133,7 @@ class App:
 
         list_log = tk.Listbox(f3_log, listvariable=var_Log, font=(
             '標楷體', 12), width=102, height=4, bg='DarkSlateBlue', fg='pink', highlightcolor="pink",
-                               selectbackground="MidnightBlue", borderwidth=2, activestyle='none')
+            selectbackground="MidnightBlue", borderwidth=2, activestyle='none')
 
         # 有scrollbar版本
         # self.scrollbar = Scrollbar(f3_log)
@@ -189,11 +181,23 @@ class App:
         btn.pack()
         popup.mainloop()
 
-    # //MARK: Botton_GUI
-    def botton_Search(self):
+    # //MARK: Button_GUI
+    def button(self):
+        global img_icon_ana
         self.btnSearch = ttk.Button(
-            f1_search, text='Search', width=10, command=self.btn_search_click)
+            f1_search, text='Search', width=10, cursor='hand2', command=self.btn_search_click)
+        self.btnSend = ttk.Button(
+            f1_search, text='send', width=10, cursor='hand2', command=self.btn_send_click)
+        self.btnProxy = ttk.Button(
+            f4_proxies, text='Get Proxies', width=10, cursor='hand2', command=self.btn_GetProxy)
+        self.btnUp = ttk.Button(
+            f7_up, text='↑', width=3, cursor='hand2', command=self.btn_sort_up)
+        self.btnDown = ttk.Button(
+            f8_down, text='↓', width=3, cursor='hand2', command=self.btn_sort_down)
+        self.btnAna = ttk.Button(
+            f9_analytics, image=img_icon_ana, width=3, cursor='hand2', command=self.btn_analytics)
 
+    # //MARK: btn_method
     def btn_search_click(self):
         self.btnSearch.config(state='disabled', text='Searching...')
         self.omGames.config(state='disabled')
@@ -217,18 +221,7 @@ class App:
         self.omGames.config(state='active')
         self.btnSend.config(state='active')
 
-    def botton_getproxy(self):
-        self.btnProxy = ttk.Button(
-            f4_proxies, text='Get Proxies', width=10, command=self.btn_GetProxy)
-
-    def btn_GetProxy(self):
-        pass
-
-    def botton_send(self):
-        self.btnSend = ttk.Button(
-            f1_search, text='send', width=10, command=self.btnSendClick)
-
-    def btnSendClick(self):
+    def btn_send_click(self):
         self.btnSearch.config(state='disabled')
         self.omGames.config(state='disabled')
         self.btnSend.config(state='disabled')
@@ -258,6 +251,18 @@ class App:
         self.omGames.config(state='active')
         self.btnSend.config(state='active')
 
+    def btn_GetProxy(self):
+        pass
+
+    def btn_sort_up(self):
+        pass
+
+    def btn_sort_down(self):
+        pass
+
+    def btn_analytics(self):
+        pass
+
     # ---進度條---
     # def progressBar(self):
     #     self.progressbar = ttk.Progressbar(
@@ -281,16 +286,11 @@ class App:
         self.lb.grid(row=1, column=0, padx=1, pady=1)
         self.lb1.grid(row=1, column=1, padx=1, pady=1)
         self.btnProxy.place(x=0, y=0)
+        self.btnUp.place(x=0, y=0)
+        self.btnDown.place(x=0, y=0)
+        self.btnAna.place(x=0, y=0)
         list_log.pack()
 
-
-# //MARK: src_image
-def src_image():
-    src_image = {}
-    src_image['img_bg'] = ImageTk.PhotoImage(Image.open(img_bg_path))
-    src_image['img_bg01'] = ImageTk.PhotoImage(Image.open(img_bg01_path))
-    src_image['img_icon'] = ImageTk.PhotoImage(Image.open(img_icon_path))
-    return src_image
 
 # -------Math--------
 
@@ -327,6 +327,22 @@ def log(text):
     # list_log.yview_moveto(1)
 
 
+# //MARK: src_image
+def src_image():
+    img_bg_path = join(CURRENT_DIR, './src/image/bg.png')
+    img_bg01_path = join(CURRENT_DIR, './src/image/bg01.png')
+    img_icon_path = join(CURRENT_DIR, './src/image/icon.jpg')
+    img_icon_ana_path = join(CURRENT_DIR, './src/image/icon_ana.png')
+
+    src_image = {}
+    src_image['img_bg'] = ImageTk.PhotoImage(Image.open(img_bg_path))
+    src_image['img_bg01'] = ImageTk.PhotoImage(Image.open(img_bg01_path))
+    src_image['img_icon'] = ImageTk.PhotoImage(Image.open(img_icon_path))
+    src_image['img_icon_ana'] = ImageTk.PhotoImage(
+        Image.open(img_icon_ana_path))
+    return src_image
+
+
 # //MARK: __Main__
 if __name__ == '__main__':
 
@@ -334,10 +350,6 @@ if __name__ == '__main__':
     var_Log = ''
     list_log = ''
     log_index = []
-
-    img_bg_path = join(CURRENT_DIR, './src/image/bg.png')
-    img_bg01_path = join(CURRENT_DIR, './src/image/bg01.png')
-    img_icon_path = join(CURRENT_DIR, './src/image/icon.jpg')
 
     # ------serface-------
     win = tk.Tk()
@@ -349,6 +361,7 @@ if __name__ == '__main__':
     img_bg = src_image()['img_bg']
     img_bg01 = src_image()['img_bg01']
     img_icon = src_image()['img_icon']
+    img_icon_ana = src_image()['img_icon_ana']
 
     # 中容器
     canvas = tk.Canvas(win, width=1240, height=865,
@@ -362,6 +375,9 @@ if __name__ == '__main__':
     f4_proxies = tk.Frame(win, width=80, height=25)
     f5_lb01 = tk.Frame(win, width=80, height=40)
     f6_lb02 = tk.Frame(win, width=80, height=40)
+    f7_up = tk.Frame(win, width=20, height=20)
+    f8_down = tk.Frame(win, width=20, height=20)
+    f9_analytics = tk.Frame(win, width=80, height=25)
 
     canvas.create_window(650, 580, width=1300, height=50, window=f1_search)
     canvas.create_window(445, 270, width=817, height=433, window=f2_list)
@@ -369,13 +385,15 @@ if __name__ == '__main__':
     canvas.create_window(55, 25, width=80, height=25, window=f4_proxies)
     canvas.create_window(250, 27, width=125, height=38, window=f5_lb01)
     canvas.create_window(650, 27, width=125, height=38, window=f6_lb02)
-    # f4_proxies.place(x=5, y=5)
-    # f5_lb01.place(x=170, y=11)
-    # f6_lb02.place(x=590, y=11)
+    canvas.create_window(880, 385, width=31, height=25, window=f7_up)
+    canvas.create_window(880, 420, width=31, height=25, window=f8_down)
+    canvas.create_window(880, 468, width=35, height=35, window=f9_analytics)
 
-    App(f1_search, f2_list, f3_log, f4_proxies, f5_lb01, f6_lb02)
+    App_start()
+    # ---------give------------
     pagespidy.set_var_Log(var_Log, list_log)
     getproxy.set_var_Log(var_Log, list_log)
+
     # --------Background-------
     # t = threading.Thread(target=pagespidy.init_get_cookie)
     # t.start()
