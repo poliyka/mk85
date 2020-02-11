@@ -1,0 +1,2 @@
+
+        global var_Log
