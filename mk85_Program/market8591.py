@@ -11,19 +11,15 @@ import pagespidy
 from setting import CURRENT_DIR
 from os.path import join
 
-# -------init--------------
+#//MARK: init
 img_bg_path = join(CURRENT_DIR, './src/image/bg01.jpg')
 img_icon_path = join(CURRENT_DIR, './src/image/icon.jpg')
 log_index = []
+
 # -------取得log---------
-
-
 def get_log_index():
     return log_index
-
 # -------使用log---------
-
-
 def log(text):
     global log_index
     log_index = pagespidy.get_log_index()
@@ -35,9 +31,7 @@ def log(text):
     list_log.see("end")
     # list_log.yview_moveto(1)
 
-# ------ GUI surface ------
-
-
+#//MARK: GUI surface
 class App:
     def __init__(self, f1, f2):
         self.f1 = f1
@@ -64,7 +58,7 @@ class App:
         # self.progressBar()
         self.object_pack()
 
-    # ----Label----------
+    # //MARK: Label_GUI
     def titleLabel(self):
         self.leb01 = tk.Label(f2, text='待交易項目', font=(
             '標楷體', 12), width=15, height=2, bg='Pink')
@@ -81,7 +75,7 @@ class App:
         self.background_label03 = tk.Label(f3, image=img_bg)
         self.background_label03.place(x=0, y=0, relwidth=1, relheight=1)
 
-    # ----optinMenu------
+    # //MARK: optinMenu_GUI
     def optinMenu(self, games, server, item):
         self.var01 = StringVar()
         self.var02 = StringVar()
@@ -122,7 +116,7 @@ class App:
         # 取得代號
         self.itemNum = self.items[findIn2DTo1D(self.items, itemOption)][0]
 
-    # 取得其他列表
+    # //MARK: 取得其他列表
     def getOtherList(self, gameName):
         otherList = pagespidy.getOtherList(gameName)
         self.servers = otherList['serverList']
@@ -134,16 +128,14 @@ class App:
         self.btnSearch.config(state='active')
         self.btnSend.config(state='active')
 
-    # -----Entry-------
-
+    # //MARK: Entry_GUI
     def entrySerchGame(self):
         self.etyGame = ttk.Entry(f1, font=('標楷體', 12), width=15)
 
     def entrySerchItem(self):
         self.etyitem = ttk.Entry(f1, font=('標楷體', 12), width=15)
 
-    # -----Listbox-----
-
+    #//MARK: Listbox_GUI
     def listbox(self):
         self.varList = tk.StringVar()
         self.varList.set([])
@@ -171,8 +163,7 @@ class App:
 
         self.scrollbar.config(command=list_log.yview)
 
-    # -----poupwindow----
-
+    # //MARK: poupwindow_GUI
     def clickLink(self, event):
         popup = tk.Tk()
         url = self.itemLists[self.lb.curselection()[0]][1]
@@ -211,7 +202,7 @@ class App:
         btn.pack()
         popup.mainloop()
 
-    # -----Botton---------
+    #//MARK: Botton_GUI
     def botton_Serch(self):
         self.btnSearch = ttk.Button(
             f1, text='Serch', width=10, command=self.btn_search_click)
@@ -276,9 +267,10 @@ class App:
     def progressBar(self):
         self.progressbar = ttk.Progressbar(
             f1, orient="horizontal", length=300, mode="determinate")
-
+    
+    # //MARK: object_pack
     def object_pack(self):
-        # f1
+        # Frame1
         self.etyGame.grid(row=0, column=0, padx=10, pady=5)
         self.btnSearch.grid(row=0, column=1, padx=10, pady=5)
         self.omGames.grid(row=0, column=2, padx=10, pady=5)
@@ -287,7 +279,7 @@ class App:
         self.etyitem.grid(row=0, column=5, padx=10, pady=5)
         self.btnSend.grid(row=0, column=6, padx=10, pady=5)
         # self.progressbar.grid(row=1, column=0, columnspan= 6, padx=10, pady=5)
-        # f2
+        # Frame2
         self.leb01.grid(row=0, column=0, padx=5, pady=5)
         self.leb02.grid(row=0, column=1, padx=5, pady=5)
         self.lb.grid(row=1, column=0, padx=2, pady=5)
@@ -295,12 +287,12 @@ class App:
         list_log.pack()
 
 
-# ------src-----------
-def src():
-    src = {}
-    src['img_bg'] = ImageTk.PhotoImage(Image.open(img_bg_path))
-    src['img_icon'] = ImageTk.PhotoImage(Image.open(img_icon_path))
-    return src
+# //MARK: src_image
+def src_image():
+    src_image = {}
+    src_image['img_bg'] = ImageTk.PhotoImage(Image.open(img_bg_path))
+    src_image['img_icon'] = ImageTk.PhotoImage(Image.open(img_icon_path))
+    return src_image
 
 # -------Math--------
 
@@ -327,7 +319,7 @@ if __name__ == '__main__':
     win = tk.Tk()
     win.geometry('1240x600')
     win.title('RO仙境傳說8591市場快速查詢程式')
-    img_bg = src()['img_bg']
+    img_bg = src_image()['img_bg']
     win.configure(bg='LightPink')
 
     canvas = tk.Canvas(win, width=1024, height=865,

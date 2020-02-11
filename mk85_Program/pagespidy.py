@@ -12,7 +12,7 @@ from selenium import webdriver
 from setting import USER_AGENT,CURRENT_DIR
 from os.path import join
 
-# -------init_path----------
+#//MARK: init_path
 chromedriver_path = join(CURRENT_DIR, "./src/webdriver/chromedriver.exe")
 proxy_path = join(CURRENT_DIR, "./src/db/proxy_List.csv")
 # ---------init-----------
@@ -65,7 +65,7 @@ def log(text):
 #     chrome.quit()
 # chrome.quit()    
 
-# -----取得遊戲目錄-------
+# //MARK: 取得遊戲目錄
 def getGameList(key):
     global COOKIES
     global chrome
@@ -80,14 +80,17 @@ def getGameList(key):
         
         # 網頁selenium,Option
         options = webdriver.ChromeOptions()
+        # 關閉顯示視窗
         options.add_argument('--headless')
+        # 無痕模式開啟
         # options.add_argument('--incognito')
+        # 固定視窗大小
         options.add_argument('–window-size=1024,1024')
         # 植入代理
-        # log(PROXY)
         # options.add_argument('--proxy-server={}'.format(PROXY))
         # 植入USER_AGENT
         options.add_argument("user-agent={}".format(USER_AGENT))
+        # 取消加載圖片提高效率
         options.add_experimental_option("prefs", prefs)
 
         chrome = webdriver.Chrome(chromedriver_path, options=options)
@@ -131,28 +134,12 @@ def getGameList(key):
             return 'error'
     else:
         return 'error'
-# 用game收尋結果取得Server資料
+    
+# //MARK: 用game收尋結果取得Server資料
 def getOtherList(gameName):
     global COOKIES
     global chrome
     log('正在點選遊戲')
-    # url = 'https://www.8591.com.tw/'
-    # options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
-    # options.add_argument('--incognito')
-    # options.add_argument('–window-size=1024,1024')
-
-    # options.add_argument('--proxy-server={}'.format(PROXY))
-
-    # options.add_argument("user-agent={}".format(USER_AGENT))
-    # chrome = webdriver.Chrome(chromedriver_path, options=options)
-    # chrome.implicitly_wait(20)
-    # chrome.delete_all_cookies()
-    # chrome.get(url)
-    # time.sleep(2)
-    # for i in COOKIES:
-    #     chrome.add_cookie(i)
-    # time.sleep(1)
 
     # 尋找遊戲列表
     gameSerchXpath = '/html/body/div[2]/div[3]/form/div/div[1]/input[2]'
@@ -189,11 +176,10 @@ def getOtherList(gameName):
     else:
         return None
 
-    # chrome.quit()
     return OtherList
 
 
-# 可變動網址:
+# //MARK: 取得頁面資料(總頁面)
 def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
     ts = time.time()
     t = threading.Thread(target=getPageIndex_Deal, args=(
@@ -266,7 +252,7 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
     log('費時:' + str(round((time.time()-ts), 5)) + '秒')
     return itemList, itemList_deal
 
-
+# //MARK: 取得頁面資料(已交易)
 def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, searchKey, firstRow, totalRows, q):
 
     form_data = {
@@ -315,7 +301,7 @@ def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, sea
             
     q.put(itemList)
 
-
+# //MARK: 取得頁面資料(已交易)
 def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
     url = 'https://www.8591.com.tw/mallList-list.html'
 
