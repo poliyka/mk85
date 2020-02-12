@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import StringVar, ttk
-from tkinter.ttk import *
+from tkinter import messagebox as mb
 import numpy as np
 from PIL import ImageTk, Image
 import threading
@@ -30,6 +30,7 @@ class App_start:
         self.background_label()
         self.titleLabel()
         self.button()
+        self.bind()
         self.entrySearchGame()
         self.optionMenu(self.games, self.servers, self.items)
         self.listbox()
@@ -53,27 +54,25 @@ class App_start:
     # //MARK: optionMenu_GUI
 
     def optionMenu(self, games, server, item):
-        self.var01 = StringVar()
-        self.var02 = StringVar()
-        self.var03 = StringVar()
+        self.varGames = StringVar()
+        self.varServers = StringVar()
+        self.varItems = StringVar()
         # 創建optionMenu 控制元件
         # 此處初始下拉選單套入擷取資料中的伺服器名稱
         # tk.OptionMenu 有另一種樣式
         # ttk.OptionMenu(介面,存取之變量,初始文字,選單中的值1,選單中的值2,...,command = 呼叫函式)
         # ttk.OptionMenu(介面,存取之變量,初始文字,*list,...,command = 呼叫函式)
         self.omGames = ttk.OptionMenu(
-            f1_search, self.var01, '請選擇遊戲', *games, direction='below', command=self.saveGame_Option)
+            f1_search, self.varGames, '請選擇遊戲', *games, direction='below', command=self.saveGame_Option)
         self.omServers = ttk.OptionMenu(
-            f1_search, self.var02, '請選擇伺服器', *server, direction='below', command=self.saveServer_Option)
+            f1_search, self.varServers, '請選擇伺服器', *server, direction='below', command=self.saveServer_Option)
         self.omItems = ttk.OptionMenu(
-            f1_search, self.var03, '請選擇物品', *item, direction='below', command=self.saveItem_Option)
+            f1_search, self.varItems, '請選擇物品', *item, direction='below', command=self.saveItem_Option)
 
     # 儲存選取變量
     def saveGame_Option(self, option):
-        gameOption = self.var01.get()
-        self.omGames.config(state='disabled')
-        self.btnSearch.config(state='disabled')
-        self.btnSend.config(state='disabled')
+        gameOption = self.varGames.get()
+        self.btn_hide()
 
         t = threading.Thread(target=self.getOtherList, args=(gameOption,))
         t.start()
@@ -81,13 +80,13 @@ class App_start:
         self.gameNum = self.games[findIn2DTo1D(self.games, gameOption)][0]
 
     def saveServer_Option(self, option):
-        serverOption = self.var02.get()
+        serverOption = self.varServers.get()
         # 取得代號
         self.serverNum = self.servers[findIn2DTo1D(
             self.servers, serverOption)][0]
 
     def saveItem_Option(self, option):
-        itemOption = self.var03.get()
+        itemOption = self.varItems.get()
         # 取得代號
         self.itemNum = self.items[findIn2DTo1D(self.items, itemOption)][0]
 
@@ -99,10 +98,7 @@ class App_start:
         self.omServers.set_menu(
             self.servers[0][1], *(i[1] for i in self.servers))
         self.omItems.set_menu(self.items[0][1], *(i[1] for i in self.items))
-
-        self.omGames.config(state='active')
-        self.btnSearch.config(state='active')
-        self.btnSend.config(state='active')
+        self.btn_show()
 
     # //MARK: Entry_GUI
     def entrySearchGame(self):
@@ -116,12 +112,12 @@ class App_start:
         self.varList = tk.StringVar()
         self.varList.set([])
         self.lb = tk.Listbox(f2_list, listvariable=self.varList, font=(
-            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none',justify='right')
+            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none', justify='right')
 
         self.varList1 = tk.StringVar()
         self.varList1.set([])
         self.lb1 = tk.Listbox(f2_list, listvariable=self.varList1, font=(
-            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none',justify='right')
+            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none', justify='right')
         self.lb.bind('<Double-Button-1>', self.clickLink)
         self.lb1.bind('<Double-Button-1>', self.clickLink1)
 
@@ -184,49 +180,116 @@ class App_start:
     # //MARK: Button_GUI
     def button(self):
         global img_icon_ana
+        global img_icon_prx
         self.btnSearch = ttk.Button(
             f1_search, text='Search', width=10, cursor='hand2', command=self.btn_search_click)
         self.btnSend = ttk.Button(
             f1_search, text='send', width=10, cursor='hand2', command=self.btn_send_click)
         self.btnProxy = ttk.Button(
-            f4_proxies, text='Get Proxies', width=10, cursor='hand2', command=self.btn_GetProxy)
+            f4_proxies, image=img_icon_prx, width=3, cursor='hand2', command=self.btn_GetProxy)
         self.btnUp = ttk.Button(
-            f7_up, text='↑', width=3, cursor='hand2', command=self.btn_sort_up)
+            f7_up, text='↑', width=3, cursor='hand2', state='disabled',command=self.btn_sort_up)
         self.btnDown = ttk.Button(
-            f8_down, text='↓', width=3, cursor='hand2', command=self.btn_sort_down)
+            f8_down, text='↓', width=3, cursor='hand2', state='disabled', command=self.btn_sort_down)
         self.btnAna = ttk.Button(
-            f9_analytics, image=img_icon_ana, width=3, cursor='hand2', command=self.btn_analytics)
+            f9_analytics, image=img_icon_ana, width=3, cursor='hand2',state='disabled', command=self.btn_analytics)
 
-    # //MARK: btn_method
-    def btn_search_click(self):
-        self.btnSearch.config(state='disabled', text='Searching...')
-        self.omGames.config(state='disabled')
-        self.btnSend.config(state='disabled')
-        t = threading.Thread(target=self.setmenu)
-        t.start()
+    # //MARK: 繫結獲取游標焦點事件
+    def bind(self):
+        self.btnUp.bind("<Enter>", self.bind_up_Enter)
+        self.btnUp.bind("<Leave>", self.bind_up_Leave)
+        self.btnDown.bind("<Enter>", self.bind_down_Enter)
+        self.btnDown.bind("<Leave>", self.bind_down_Leave)
+        self.btnProxy.bind("<Enter>", self.bind_proxy_Enter)
+        self.btnProxy.bind("<Leave>", self.bind_proxy_Leave)
+        self.btnAna.bind("<Enter>", self.bind_ana_Enter)
+        self.btnAna.bind("<Leave>", self.bind_ana_Leave)
 
-    def setmenu(self):
-        if self.etyGame.get() != '':
-            data = pagespidy.getGameList(self.etyGame.get())
-            if data != 'error':
-                try:
-                    self.games = [i for i in data]
-                    self.omGames.set_menu(
-                        self.games[0][1], *(i[1] for i in self.games))
-                    log('收尋完成')
-                except:
-                    log('沒有收尋到相關遊戲')
+    def bind_up_Enter(self, bind):
+        self.bn_up = tk.Label(canvas, text='價格↑', font=(
+            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
+        self.bn_up.place(x=900, y=350)
 
+    def bind_up_Leave(self, bind):
+        self.bn_up.place_forget()
+
+    def bind_down_Enter(self, bind):
+        self.bn_down = tk.Label(canvas, text='價格↓', font=(
+            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
+        self.bn_down.place(x=900, y=420)
+
+    def bind_down_Leave(self, bind):
+        self.bn_down.place_forget()
+
+    def bind_ana_Enter(self, bind):
+        self.btnAna = tk.Label(canvas, text='分析價格', font=(
+            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
+        self.btnAna.place(x=900, y=450)
+
+    def bind_ana_Leave(self, bind):
+        self.btnAna.place_forget()
+    
+    def bind_proxy_Enter(self, bind):
+        self.btnProxy = tk.Label(canvas, text='取得代理', font=(
+            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
+        self.btnProxy.place(x=900, y=500)
+
+    def bind_proxy_Leave(self, bind):
+        self.btnProxy.place_forget()
+        
+    # button active/disabled
+    def btn_show(self):
         self.btnSearch.config(state='active', text='Search')
         self.omGames.config(state='active')
         self.btnSend.config(state='active')
-
-    def btn_send_click(self):
-        self.btnSearch.config(state='disabled')
+        
+    def btn_hide(self):
+        self.btnSearch.config(state='disabled', text='Searching...')
         self.omGames.config(state='disabled')
         self.btnSend.config(state='disabled')
-        t = threading.Thread(target=self.btn_set_lisbox)
-        t.start()
+    
+        
+
+
+        
+    # //MARK: btn_method
+    def btn_search_click(self):
+        if self.etyGame.get() != '':
+            self.btn_hide()
+            t = threading.Thread(target=self.setmenu)
+            t.start()
+        else:
+            log('請輸入要查詢的遊戲...')
+
+    def setmenu(self):
+        data = pagespidy.getGameList(self.etyGame.get())
+        if data != 'error':
+            try:
+                self.games = [i for i in data]
+                self.omGames.set_menu(
+                    self.games[0][1], *(i[1] for i in self.games))
+                log('收尋完成')
+            except:
+                log('沒有收尋到相關遊戲')
+        self.btn_show()
+
+    def btn_send_click(self):
+        if self.varGames.get() != '請選擇遊戲':
+            if self.etyItem.get() != '':
+                self.btn_hide()
+                t = threading.Thread(target=self.btn_set_lisbox)
+                t.start()
+            else:
+                mb1 = mb.askokcancel('Warning','沒有輸入收尋條件將會爬取大量數據確定繼續?')
+                if mb1 == True:
+                    self.btn_hide()
+                    t = threading.Thread(target=self.btn_set_lisbox)
+                    t.start()
+                else:
+                    log('搜尋中斷...')
+        else:
+            self.btn_show()
+            log('請選擇遊戲在送出')
 
     def btn_set_lisbox(self):
         self.itemLists, self.itemLists_Deals = pagespidy.getPageIndex(
@@ -246,10 +309,10 @@ class App_start:
         self.varList1.set(b)
         del a
         del b
-
-        self.btnSearch.config(state='active')
-        self.omGames.config(state='active')
-        self.btnSend.config(state='active')
+        self.btn_show()
+        self.btnAna.config(state='active')
+        self.btnUp.config(state='active')
+        
 
     def btn_GetProxy(self):
         pass
@@ -333,6 +396,7 @@ def src_image():
     img_bg01_path = join(CURRENT_DIR, './src/image/bg01.png')
     img_icon_path = join(CURRENT_DIR, './src/image/icon.jpg')
     img_icon_ana_path = join(CURRENT_DIR, './src/image/icon_ana.png')
+    img_icon_prx_path = join(CURRENT_DIR, './src/image/icon_prx.png')
 
     src_image = {}
     src_image['img_bg'] = ImageTk.PhotoImage(Image.open(img_bg_path))
@@ -340,6 +404,8 @@ def src_image():
     src_image['img_icon'] = ImageTk.PhotoImage(Image.open(img_icon_path))
     src_image['img_icon_ana'] = ImageTk.PhotoImage(
         Image.open(img_icon_ana_path))
+    src_image['img_icon_prx'] = ImageTk.PhotoImage(
+        Image.open(img_icon_prx_path))
     return src_image
 
 
@@ -362,6 +428,7 @@ if __name__ == '__main__':
     img_bg01 = src_image()['img_bg01']
     img_icon = src_image()['img_icon']
     img_icon_ana = src_image()['img_icon_ana']
+    img_icon_prx = src_image()['img_icon_prx']
 
     # 中容器
     canvas = tk.Canvas(win, width=1240, height=865,
@@ -382,7 +449,7 @@ if __name__ == '__main__':
     canvas.create_window(650, 580, width=1300, height=50, window=f1_search)
     canvas.create_window(445, 270, width=817, height=433, window=f2_list)
     canvas.create_window(445, 522, width=817, height=64, window=f3_log)
-    canvas.create_window(55, 25, width=80, height=25, window=f4_proxies)
+    canvas.create_window(880, 500, width=35, height=35, window=f4_proxies)
     canvas.create_window(250, 27, width=125, height=38, window=f5_lb01)
     canvas.create_window(650, 27, width=125, height=38, window=f6_lb02)
     canvas.create_window(880, 385, width=31, height=25, window=f7_up)

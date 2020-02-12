@@ -1,1 +1,5 @@
-00
+
+            print(c)
+            break
+        else:
+            t()
