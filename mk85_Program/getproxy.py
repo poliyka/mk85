@@ -84,7 +84,7 @@ def get_proxy03():
 
     proxies = []
     proxies += p03.get_q()
-    log("Finish:取得("+str(len(proxies))+")個代理")
+    # log("Finish:取得("+str(len(proxies))+")個代理")
 
     with open(proxy_list_path, 'w', newline='') as f:
         writer = csv.writer(f)

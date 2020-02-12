@@ -2,15 +2,18 @@ import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox as mb
 import numpy as np
+import time
 from PIL import ImageTk, Image
 import threading
 from queue import Queue
 import os
+import sys
 import webbrowser
 import pagespidy
 import getproxy
 from setting import CURRENT_DIR
 from os.path import join
+
 
 # //MARK: GUI surface
 
@@ -255,19 +258,27 @@ class App_start:
             self.btn_hide()
             t = threading.Thread(target=self.setmenu)
             t.start()
+            
         else:
             log('請輸入要查詢的遊戲...')
 
     def setmenu(self):
         data = pagespidy.getGameList(self.etyGame.get())
-        if data != 'error':
-            try:
-                self.games = [i for i in data]
-                self.omGames.set_menu(
-                    self.games[0][1], *(i[1] for i in self.games))
-                log('收尋完成')
-            except:
-                log('沒有收尋到相關遊戲')
+        if data == 'disconnent':
+            log('請檢查是否被鎖IP')
+        else:
+            if data != 'error':
+                try:
+                    self.games = [i for i in data]
+                    self.omGames.set_menu(
+                        self.games[0][1], *(i[1] for i in self.games))
+                    log('收尋完成')
+                except:
+                    log('沒有收尋到相關遊戲')
+            else:
+                log('無法取得網頁資料')
+        
+        
         self.btn_show()
 
     def btn_send_click(self):
@@ -403,13 +414,10 @@ def findIn2DTo1D(list2D, find):
 
 # \\MARK: give and get
 # -------取得log---------
-
-
 def get_log_index():
     return log_index
+
 # -------使用log---------
-
-
 def log(text):
     global log_index
     log_index = pagespidy.get_log_index()
@@ -440,6 +448,11 @@ def src_image():
         Image.open(img_icon_prx_path))
     return src_image
 
+# Exit
+def closeWindow():
+    pagespidy.close_chrome()
+    win.destroy()
+    
 
 # //MARK: __Main__
 if __name__ == '__main__':
@@ -447,6 +460,7 @@ if __name__ == '__main__':
     # //MARK: init
     var_Log = ''
     list_log = ''
+    chrome = ''
     log_index = []
 
     # ------serface-------
@@ -498,4 +512,5 @@ if __name__ == '__main__':
     # t.start()
 
     # --------TkinterEnd-------
+    win.protocol('WM_DELETE_WINDOW', closeWindow)
     win.mainloop()

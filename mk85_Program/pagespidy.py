@@ -9,7 +9,7 @@ import os
 from queue import Queue
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from setting import USER_AGENT,CURRENT_DIR,CONNECT_WAITTING
+from setting import USER_AGENT,CURRENT_DIR,CONNECT_WAITTING,HOST
 from os.path import join
 
 #//MARK: init_path
@@ -27,6 +27,7 @@ chrome = ''
 gkey = ''
 count = 0
 check_int = 1 
+check_loop = False
 # -------取得代理--------
 proxy_List = []
 with open(proxy_path, 'r', newline='') as f:
@@ -56,21 +57,38 @@ def log(text):
     list_log.see("end")
     # list_log.yview_moveto(1)
 
+def set_check_loop():
+    global check_loop
+    check_loop = False
+    
 def log_count():
     global log_index
     global COOKIES
+    global check_loop
     for i in range(CONNECT_WAITTING,-1,-1):
         if COOKIES == []:
-            log_index.append('正在嘗試連線...(' + str(i) + ')')
-            var_Log.set(log_index)
-            time.sleep(1)
-            list_log.selection_clear(0,"end")
-            list_log.selection_set("end")
-            list_log.see("end")
-            log_index.pop()
-        else:
-            break
-            
+            if check_loop == True:
+                log_index.append('正在嘗試連線...(' + str(i) + ')')
+                var_Log.set(log_index)
+                time.sleep(1)
+                list_log.selection_clear(0,"end")
+                list_log.selection_set("end")
+                list_log.see("end")
+                log_index.pop()
+            else:
+                break
+
+# ---Chrome----
+def close_chrome():
+    global chrome
+    global check_loop
+    
+    if check_loop != False:
+        while chrome == '':
+            continue
+        chrome.quit()
+
+
 
 
 # -------mothod---------- 
@@ -94,15 +112,19 @@ def getGameList(key):
     global log_index
     global count
     global check_int
+    global check_loop
     global gkey
+    
     gkey = key
     # 判斷是否初次開啟
     if count == 0:
         # log 倒數
+        check_loop = True
         t = threading.Thread(target= log_count)
         t.start()
         
         url = 'https://www.8591.com.tw/'
+        # url = 'https://www.google.com.tw/'
         prefs = {"profile.managed_default_content_settings.images": 2}
         
         # 網頁selenium,Option
@@ -116,7 +138,7 @@ def getGameList(key):
         # 植入代理
         # options.add_argument('--proxy-server={}'.format(PROXY))
         # 植入USER_AGENT
-        options.add_argument("user-agent={}".format(USER_AGENT))
+        options.add_argument("user-agent={}".format(HOST))
         # 取消加載圖片提高效率
         options.add_experimental_option("prefs", prefs)
 
@@ -127,7 +149,13 @@ def getGameList(key):
         COOKIES = chrome.get_cookies()
         # -----判斷連線是否成功
         if COOKIES == []:
+            check_loop = False
+            time.sleep(1)
+            check_loop = True
             loop()
+                
+            if check_int == 4:
+                return 'disconnent'
         else:            
             count += 1
             # 使用者輸入關鍵字取得遊戲列表
@@ -148,7 +176,6 @@ def getGameList(key):
                 check_int = 1
                 return gameList
             else:
-                log('無法取得網頁資料')
                 chrome.quit()
                 check_int = 1
                 return 'error'
@@ -171,7 +198,6 @@ def getGameList(key):
             check_int = 1
             return gameList
         else:
-            log('無法取得網頁資料')
             chrome.quit()
             check_int = 1
             return 'error'
