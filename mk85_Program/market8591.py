@@ -188,11 +188,11 @@ class App_start:
         self.btnProxy = ttk.Button(
             f4_proxies, image=img_icon_prx, width=3, cursor='hand2', command=self.btn_GetProxy)
         self.btnUp = ttk.Button(
-            f7_up, text='↑', width=3, cursor='hand2', state='disabled',command=self.btn_sort_up)
+            f7_up, text='↑', width=3, cursor='hand2', state='disabled', command=self.btn_sort_up)
         self.btnDown = ttk.Button(
             f8_down, text='↓', width=3, cursor='hand2', state='disabled', command=self.btn_sort_down)
         self.btnAna = ttk.Button(
-            f9_analytics, image=img_icon_ana, width=3, cursor='hand2',state='disabled', command=self.btn_analytics)
+            f9_analytics, image=img_icon_ana, width=3, cursor='hand2', state='disabled', command=self.btn_analytics)
 
     # //MARK: 繫結獲取游標焦點事件
     def bind(self):
@@ -228,7 +228,7 @@ class App_start:
 
     def bind_ana_Leave(self, bind):
         self.btnAna.place_forget()
-    
+
     def bind_proxy_Enter(self, bind):
         self.btnProxy = tk.Label(canvas, text='取得代理', font=(
             '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
@@ -236,23 +236,20 @@ class App_start:
 
     def bind_proxy_Leave(self, bind):
         self.btnProxy.place_forget()
-        
+
     # button active/disabled
     def btn_show(self):
         self.btnSearch.config(state='active', text='Search')
         self.omGames.config(state='active')
         self.btnSend.config(state='active')
-        
+
     def btn_hide(self):
         self.btnSearch.config(state='disabled', text='Searching...')
         self.omGames.config(state='disabled')
         self.btnSend.config(state='disabled')
-    
-        
 
-
-        
     # //MARK: btn_method
+
     def btn_search_click(self):
         if self.etyGame.get() != '':
             self.btn_hide()
@@ -280,7 +277,7 @@ class App_start:
                 t = threading.Thread(target=self.btn_set_lisbox)
                 t.start()
             else:
-                mb1 = mb.askokcancel('Warning','沒有輸入收尋條件將會爬取大量數據確定繼續?')
+                mb1 = mb.askokcancel('Warning', '沒有輸入收尋條件將會爬取大量數據確定繼續?')
                 if mb1 == True:
                     self.btn_hide()
                     t = threading.Thread(target=self.btn_set_lisbox)
@@ -312,17 +309,46 @@ class App_start:
         self.btn_show()
         self.btnAna.config(state='active')
         self.btnUp.config(state='active')
-        
 
     def btn_GetProxy(self):
         pass
 
     def btn_sort_up(self):
-        pass
+        a = []
+        b = []
+        self.itemLists = sorted(
+            self.itemLists, key=lambda s: int(s[2][:-1].replace(',', '')), reverse=True)
+        for itemList in self.itemLists:
+            a += [itemList[0][:20] + '\t\t' + itemList[2]]
+        self.varList.set(a)
+        
+        self.itemLists_Deals = sorted(
+            self.itemLists_Deals, key=lambda s: int(s[2][:-1].replace(',', '')), reverse=True)
+        
+        for itemLists_Deal in self.itemLists_Deals:
+            b += [itemLists_Deal[0][:20] + '\t\t' + itemLists_Deal[2]]
+        self.varList1.set(b)
+        self.btnUp.config(state='disable')
+        self.btnDown.config(state='active')
 
     def btn_sort_down(self):
-        pass
-
+        a = []
+        b = []
+        self.itemLists = sorted(
+            self.itemLists, key=lambda s: int(s[2][:-1].replace(',', '')))
+        for itemList in self.itemLists:
+            a += [itemList[0][:20] + '\t\t' + itemList[2]]
+        self.varList.set(a)
+        
+        self.itemLists_Deals = sorted(
+            self.itemLists_Deals, key=lambda s: int(s[2][:-1].replace(',', '')))
+        
+        for itemLists_Deal in self.itemLists_Deals:
+            b += [itemLists_Deal[0][:20] + '\t\t' + itemLists_Deal[2]]
+        self.varList1.set(b)
+        self.btnDown.config(state='disable')
+        self.btnUp.config(state='active')
+        
     def btn_analytics(self):
         pass
 

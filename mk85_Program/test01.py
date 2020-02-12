@@ -1,21 +1,4 @@
-i = 1
-c = 1
+list = [1,2,3,4]
 
-
-
-def t(): 
-    global c
-    print(c)
-    c += 1
-    t1()
-
-    
-def t1():
-    global c
-    while c != 4:
-        
-        t()
-    
-    print('End')
-        
-t()
+a = sorted(list,reverse = True)
+print(a)
