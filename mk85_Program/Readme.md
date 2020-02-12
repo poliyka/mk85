@@ -82,8 +82,13 @@
 >pyinstaller
 
     在cmd環境下cd到檔案目錄
-    1.pyinstaller -F -w  --hidden-import pagespidy market8591.py
-        (-F 建立資料夾, -w去除執行後cmd視窗, --hidden-import pyfile 手動import py檔)
+    1.pyinstaller -F -w  --hidden-import pagespidy .\market8591.py
+        -F 打包成一個exe文件
+        –icon=圖標路徑
+        -w 使用視窗，無控制台
+        -c 使用控制台，無視窗
+        -D 創建一個目錄，包含exe以及其他一些依賴性文件
+        --hidden-import module
 
     2.修改market8591.spec內文 手動import資源
 ([手動import資源參考](https://codingdailyblog.wordpress.com/2018/03/24/python-pyinstaller%E6%89%93%E5%8C%85exe%E4%B8%80%E4%BD%B5%E5%8C%85%E5%90%AB%E7%85%A7%E7%89%87%E6%AA%94%E6%8A%80%E5%B7%A7/))
