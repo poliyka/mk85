@@ -9,7 +9,7 @@ import os
 from queue import Queue
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from setting import USER_AGENT,CURRENT_DIR
+from setting import USER_AGENT,CURRENT_DIR,CONNECT_WAITTING
 from os.path import join
 
 #//MARK: init_path
@@ -24,6 +24,7 @@ var_Log = ''
 list_log = ''
 log_index = []
 chrome = ''
+gkey = ''
 count = 0
 check_int = 1 
 # -------取得代理--------
@@ -55,16 +56,37 @@ def log(text):
     list_log.see("end")
     # list_log.yview_moveto(1)
 
-# -------mothod----------
+def log_count():
+    global log_index
+    global COOKIES
+    for i in range(CONNECT_WAITTING,-1,-1):
+        if COOKIES == []:
+            log_index.append('正在嘗試連線...(' + str(i) + ')')
+            var_Log.set(log_index)
+            time.sleep(1)
+            list_log.selection_clear(0,"end")
+            list_log.selection_set("end")
+            list_log.see("end")
+            log_index.pop()
+        else:
+            break
+            
 
-# -----取得cookies(沒有功能紀錄用)-------
-# COOKIES = chrome.get_cookies()
-# # 唯一判斷selenium有沒有正常開啟的判斷式 
-# while COOKIES == []:
-#     init_get_cookie()
-#     chrome.quit()
-# chrome.quit()    
 
+# -------mothod---------- 
+def loop():
+    global gkey 
+    global check_int
+    global chrome
+    log('連線失敗...嘗試重新連線(' + str(check_int) + ')')
+    chrome.quit()
+    check_int += 1
+    
+    if check_int == 4:
+        log('無法連線網頁...請確定網路(非代理)')
+    else:
+        getGameList(gkey)
+        
 # //MARK: 取得遊戲目錄
 def getGameList(key):
     global COOKIES
@@ -72,9 +94,14 @@ def getGameList(key):
     global log_index
     global count
     global check_int
+    global gkey
+    gkey = key
     # 判斷是否初次開啟
     if count == 0:
-        log('正在嘗試連線...')
+        # log 倒數
+        t = threading.Thread(target= log_count)
+        t.start()
+        
         url = 'https://www.8591.com.tw/'
         prefs = {"profile.managed_default_content_settings.images": 2}
         
@@ -94,45 +121,39 @@ def getGameList(key):
         options.add_experimental_option("prefs", prefs)
 
         chrome = webdriver.Chrome(chromedriver_path, options=options)
-        chrome.implicitly_wait(20)
+        chrome.implicitly_wait(CONNECT_WAITTING)
         chrome.delete_all_cookies()
         chrome.get(url)
         COOKIES = chrome.get_cookies()
         # -----判斷連線是否成功
-        while COOKIES == []:
-            log('連線失敗...嘗試重新連線(' + str(check_int) + ')')
-            chrome.quit()
-            check_int += 1
-            
-            if check_int == 4:
-                log('無法連線網頁...請確定網路(非代理)')
+        if COOKIES == []:
+            loop()
+        else:            
+            count += 1
+            # 使用者輸入關鍵字取得遊戲列表
+            gameSerchXpath = '/html/body/div[2]/div[3]/form/div/div[1]/input[2]'
+            gameInput = chrome.find_element_by_xpath(gameSerchXpath)
+            gameInput.clear()
+            gameInput.send_keys(key)
+            time.sleep(1)
+
+            soup = BeautifulSoup(chrome.page_source, 'lxml')
+            if soup != None:
+                lis = soup.find(id='TS_gameList').find_all('li')
+                gameList = []
+                for i, li in enumerate(lis):
+                    if i != 0:
+                        gameList.append([li['val'].strip('_'), li.text.strip()])
+                
+                check_int = 1
+                return gameList
+            else:
+                log('無法取得網頁資料')
+                chrome.quit()
                 check_int = 1
                 return 'error'
-            getGameList(key)
-    if check_int != 4:        
-        count += 1
-
-        # 使用者輸入關鍵字取得遊戲列表
-        gameSerchXpath = '/html/body/div[2]/div[3]/form/div/div[1]/input[2]'
-        gameInput = chrome.find_element_by_xpath(gameSerchXpath)
-        gameInput.clear()
-        gameInput.send_keys(key)
-        time.sleep(1)
-
-        soup = BeautifulSoup(chrome.page_source, 'lxml')
-        if soup != None:
-            lis = soup.find(id='TS_gameList').find_all('li')
-            gameList = []
-            for i, li in enumerate(lis):
-                if i != 0:
-                    gameList.append([li['val'].strip('_'), li.text.strip()])
-
-            return gameList
-        else:
-            log('無法取得網頁資料')
-            chrome.quit()
-            return 'error'
-    else:
+            
+        check_int = 1
         return 'error'
     
 # //MARK: 用game收尋結果取得Server資料
@@ -175,7 +196,7 @@ def getOtherList(gameName):
         OtherList['itemList'] = itemList
     else:
         return None
-
+    log('請點選伺服器、物品、輸入想要收尋關鍵字在按 Send')
     return OtherList
 
 
