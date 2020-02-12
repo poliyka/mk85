@@ -6,8 +6,6 @@ import time
 from PIL import ImageTk, Image
 import threading
 from queue import Queue
-import os
-import sys
 import webbrowser
 import pagespidy
 import getproxy
