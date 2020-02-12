@@ -291,24 +291,30 @@ class App_start:
     def btn_set_lisbox(self):
         self.itemLists, self.itemLists_Deals = pagespidy.getPageIndex(
             self.gameNum, self.serverNum, self.itemNum, self.etyItem.get())
+        
+        if (self.itemLists != [] and self.itemLists_Deals != []):
+            a, b = [], []
+            # 重新排列價格 低->高
+            self.itemLists = sorted(
+                self.itemLists, key=lambda s: int(s[2][:-1].replace(',', '')))
+            for itemList in self.itemLists:
+                a += [itemList[0][:20] + '\t\t' + itemList[2]]
 
-        a, b = [], []
-        # 重新排列價格 低->高
-        self.itemLists = sorted(
-            self.itemLists, key=lambda s: int(s[2][:-1].replace(',', '')))
-        for itemList in self.itemLists:
-            a += [itemList[0][:20] + '\t\t' + itemList[2]]
-
-        self.varList.set(a)
-        # 未使用Mult-Thread所以不需要排列
-        for itemLists_Deal in self.itemLists_Deals:
-            b += [itemLists_Deal[0][:20] + '\t\t' + itemLists_Deal[2]]
-        self.varList1.set(b)
-        del a
-        del b
-        self.btn_show()
-        self.btnAna.config(state='active')
-        self.btnUp.config(state='active')
+            self.varList.set(a)
+            # 未使用Mult-Thread所以不需要排列
+            for itemLists_Deal in self.itemLists_Deals:
+                b += [itemLists_Deal[0][:20] + '\t\t' + itemLists_Deal[2]]
+            self.varList1.set(b)
+            del a
+            del b
+            self.btn_show()
+            self.btnAna.config(state='active')
+            self.btnUp.config(state='active')
+        else:
+            log('沒有人在買賣喔')
+            self.btn_show()
+            self.btnAna.config(state='active')
+            self.btnUp.config(state='active')
 
     def btn_GetProxy(self):
         pass

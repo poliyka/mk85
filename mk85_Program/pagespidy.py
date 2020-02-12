@@ -152,10 +152,30 @@ def getGameList(key):
                 chrome.quit()
                 check_int = 1
                 return 'error'
+    else:
+        log('更變搜尋中...')
+        gameSerchXpath = '/html/body/div[2]/div[3]/form/div/div[1]/input[2]'
+        gameInput = chrome.find_element_by_xpath(gameSerchXpath)
+        gameInput.clear()
+        gameInput.send_keys(key)
+        time.sleep(1)
+
+        soup = BeautifulSoup(chrome.page_source, 'lxml')
+        if soup != None:
+            lis = soup.find(id='TS_gameList').find_all('li')
+            gameList = []
+            for i, li in enumerate(lis):
+                if i != 0:
+                    gameList.append([li['val'].strip('_'), li.text.strip()])
             
-        check_int = 1
-        return 'error'
-    
+            check_int = 1
+            return gameList
+        else:
+            log('無法取得網頁資料')
+            chrome.quit()
+            check_int = 1
+            return 'error'
+
 # //MARK: 用game收尋結果取得Server資料
 def getOtherList(gameName):
     global COOKIES
