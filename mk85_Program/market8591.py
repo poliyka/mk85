@@ -14,8 +14,6 @@ from os.path import join
 
 
 # //MARK: GUI surface
-
-
 class App_start:
     def __init__(self):
         self.games = []
@@ -42,10 +40,21 @@ class App_start:
 
     # //MARK: Label_GUI
     def titleLabel(self):
-        self.leb01 = tk.Label(f5_lb01, text='待交易項目', font=(
-            '標楷體', 12), width=15, height=2, bg='Pink')
-        self.leb02 = tk.Label(f6_lb02, text='已完成交易項目', font=(
-            '標楷體', 12), width=15, height=2, bg='Plum')
+        self.leb01 = tk.Label(f5_lb01,
+                              text='待交易項目',
+                              font=('標楷體', 12),
+                              width=15,
+                              height=2,
+                              bg='Pink'
+                              )
+
+        self.leb02 = tk.Label(f6_lb02,
+                              text='已完成交易項目',
+                              font=('標楷體', 12),
+                              width=15,
+                              height=2,
+                              bg='Plum'
+                              )
 
     def background_label(self):
         global img_icon
@@ -63,12 +72,28 @@ class App_start:
         # tk.OptionMenu 有另一種樣式
         # ttk.OptionMenu(介面,存取之變量,初始文字,選單中的值1,選單中的值2,...,command = 呼叫函式)
         # ttk.OptionMenu(介面,存取之變量,初始文字,*list,...,command = 呼叫函式)
-        self.omGames = ttk.OptionMenu(
-            f1_search, self.varGames, '請選擇遊戲', *games, direction='below', command=self.saveGame_Option)
-        self.omServers = ttk.OptionMenu(
-            f1_search, self.varServers, '請選擇伺服器', *server, direction='below', command=self.saveServer_Option)
-        self.omItems = ttk.OptionMenu(
-            f1_search, self.varItems, '請選擇物品', *item, direction='below', command=self.saveItem_Option)
+        self.omGames = ttk.OptionMenu(f1_search,
+                                      self.varGames,
+                                      '請選擇遊戲',
+                                      *games,
+                                      direction='below',
+                                      command=self.saveGame_Option
+                                      )
+
+        self.omServers = ttk.OptionMenu(f1_search,
+                                        self.varServers,
+                                        '請選擇伺服器',
+                                        *server,
+                                        direction='below',
+                                        command=self.saveServer_Option
+                                        )
+
+        self.omItems = ttk.OptionMenu(f1_search,
+                                      self.varItems,
+                                      '請選擇物品',
+                                      *item, direction='below',
+                                      command=self.saveItem_Option
+                                      )
 
     # 儲存選取變量
     def saveGame_Option(self, option):
@@ -112,13 +137,36 @@ class App_start:
     def listbox(self):
         self.varList = tk.StringVar()
         self.varList.set([])
-        self.lb = tk.Listbox(f2_list, listvariable=self.varList, font=(
-            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none', justify='right')
+        self.lb = tk.Listbox(f2_list,
+                             listvariable=self.varList,
+                             font=('標楷體', 12),
+                             bg='sky blue',
+                             width=50,
+                             height=25,
+                             highlightcolor="MidnightBlue",
+                             selectbackground="pink",
+                             selectforeground="MidnightBlue",
+                             borderwidth=2,
+                             activestyle='none',
+                             justify='right'
+                             )
 
         self.varList1 = tk.StringVar()
         self.varList1.set([])
-        self.lb1 = tk.Listbox(f2_list, listvariable=self.varList1, font=(
-            '標楷體', 12), bg='sky blue', width=50, height=25, highlightcolor="MidnightBlue", selectbackground="pink", selectforeground="MidnightBlue", borderwidth=2, activestyle='none', justify='right')
+        self.lb1 = tk.Listbox(f2_list,
+                              listvariable=self.varList1,
+                              font=('標楷體', 12),
+                              bg='sky blue',
+                              width=50,
+                              height=25,
+                              highlightcolor="MidnightBlue",
+                              selectbackground="pink",
+                              selectforeground="MidnightBlue",
+                              borderwidth=2,
+                              activestyle='none',
+                              justify='right'
+                              )
+
         self.lb.bind('<Double-Button-1>', self.clickLink)
         self.lb1.bind('<Double-Button-1>', self.clickLink1)
 
@@ -128,9 +176,18 @@ class App_start:
         var_Log = tk.StringVar()
         var_Log.set([])
 
-        list_log = tk.Listbox(f3_log, listvariable=var_Log, font=(
-            '標楷體', 12), width=102, height=4, bg='DarkSlateBlue', fg='pink', highlightcolor="pink",
-            selectbackground="MidnightBlue", borderwidth=2, activestyle='none')
+        list_log = tk.Listbox(f3_log,
+                              listvariable=var_Log,
+                              font=('標楷體', 12),
+                              width=102,
+                              height=4,
+                              bg='DarkSlateBlue',
+                              fg='pink',
+                              highlightcolor="pink",
+                              selectbackground="MidnightBlue",
+                              borderwidth=2,
+                              activestyle='none'
+                              )
 
         # 有scrollbar版本
         # self.scrollbar = Scrollbar(f3_log)
@@ -182,18 +239,50 @@ class App_start:
     def button(self):
         global img_icon_ana
         global img_icon_prx
-        self.btnSearch = ttk.Button(
-            f1_search, text='Search', width=10, cursor='hand2', command=self.btn_search_click)
-        self.btnSend = ttk.Button(
-            f1_search, text='send', width=10, cursor='hand2', command=self.btn_send_click)
-        self.btnProxy = ttk.Button(
-            f4_proxies, image=img_icon_prx, width=3, cursor='hand2', command=self.btn_GetProxy)
-        self.btnUp = ttk.Button(
-            f7_up, text='↑', width=3, cursor='hand2', state='disabled', command=self.btn_sort_up)
-        self.btnDown = ttk.Button(
-            f8_down, text='↓', width=3, cursor='hand2', state='disabled', command=self.btn_sort_down)
-        self.btnAna = ttk.Button(
-            f9_analytics, image=img_icon_ana, width=3, cursor='hand2', state='disabled', command=self.btn_analytics)
+        self.btnSearch = ttk.Button(f1_search,
+                                    text='Search',
+                                    width=10,
+                                    cursor='hand2',
+                                    command=self.btn_search_click
+                                    )
+
+        self.btnSend = ttk.Button(f1_search,
+                                  text='send',
+                                  width=10,
+                                  cursor='hand2',
+                                  command=self.btn_send_click
+                                  )
+
+        self.btnProxy = ttk.Button(f4_proxies,
+                                   image=img_icon_prx,
+                                   width=3,
+                                   cursor='hand2',
+                                   command=self.btn_GetProxy
+                                   )
+
+        self.btnUp = ttk.Button(f7_up,
+                                text='↑',
+                                width=3,
+                                cursor='hand2',
+                                state='disabled',
+                                command=self.btn_sort_up
+                                )
+
+        self.btnDown = ttk.Button(f8_down,
+                                  text='↓',
+                                  width=3,
+                                  cursor='hand2',
+                                  state='disabled',
+                                  command=self.btn_sort_down
+                                  )
+
+        self.btnAna = ttk.Button(f9_analytics,
+                                 image=img_icon_ana,
+                                 width=3,
+                                 cursor='hand2',
+                                 state='disabled',
+                                 command=self.btn_analytics
+                                 )
 
     # //MARK: 繫結獲取游標焦點事件
     def bind(self):
@@ -207,33 +296,55 @@ class App_start:
         self.btnAna.bind("<Leave>", self.bind_ana_Leave)
 
     def bind_up_Enter(self, bind):
-        self.bn_up = tk.Label(canvas, text='價格↑', font=(
-            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
+        self.bn_up = tk.Label(canvas,
+                              text='價格↑',
+                              font=('標楷體', 14),
+                              width=8,
+                              height=1,
+                              bg='Pink',
+                              fg='MidnightBlue'
+                              )
         self.bn_up.place(x=900, y=350)
+
+    def bind_down_Enter(self, bind):
+        self.bn_down = tk.Label(canvas,
+                                text='價格↓',
+                                font=('標楷體', 14),
+                                width=8, height=1,
+                                bg='Pink',
+                                fg='MidnightBlue')
+        self.bn_down.place(x=900, y=420)
+
+    def bind_ana_Enter(self, bind):
+        self.btnAna = tk.Label(canvas,
+                               text='分析價格',
+                               font=('標楷體', 14),
+                               width=8,
+                               height=1,
+                               bg='Pink',
+                               fg='MidnightBlue'
+                               )
+        self.btnAna.place(x=900, y=450)
+
+    def bind_proxy_Enter(self, bind):
+        self.btnProxy = tk.Label(canvas,
+                                 text='取得代理',
+                                 font=('標楷體', 14),
+                                 width=8,
+                                 height=1,
+                                 bg='Pink',
+                                 fg='MidnightBlue'
+                                 )
+        self.btnProxy.place(x=900, y=500)
 
     def bind_up_Leave(self, bind):
         self.bn_up.place_forget()
 
-    def bind_down_Enter(self, bind):
-        self.bn_down = tk.Label(canvas, text='價格↓', font=(
-            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
-        self.bn_down.place(x=900, y=420)
-
     def bind_down_Leave(self, bind):
         self.bn_down.place_forget()
 
-    def bind_ana_Enter(self, bind):
-        self.btnAna = tk.Label(canvas, text='分析價格', font=(
-            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
-        self.btnAna.place(x=900, y=450)
-
     def bind_ana_Leave(self, bind):
         self.btnAna.place_forget()
-
-    def bind_proxy_Enter(self, bind):
-        self.btnProxy = tk.Label(canvas, text='取得代理', font=(
-            '標楷體', 14), width=8, height=1, bg='Pink', fg='MidnightBlue')
-        self.btnProxy.place(x=900, y=500)
 
     def bind_proxy_Leave(self, bind):
         self.btnProxy.place_forget()
@@ -256,7 +367,7 @@ class App_start:
             self.btn_hide()
             t = threading.Thread(target=self.setmenu)
             t.start()
-            
+
         else:
             log('請輸入要查詢的遊戲...')
 
@@ -275,8 +386,7 @@ class App_start:
                     log('沒有收尋到相關遊戲')
             else:
                 log('無法取得網頁資料')
-        
-        
+
         self.btn_show()
 
     def btn_send_click(self):
@@ -300,7 +410,7 @@ class App_start:
     def btn_set_lisbox(self):
         self.itemLists, self.itemLists_Deals = pagespidy.getPageIndex(
             self.gameNum, self.serverNum, self.itemNum, self.etyItem.get())
-        
+
         if (self.itemLists != [] and self.itemLists_Deals != []):
             a, b = [], []
             # 重新排列價格 低->高
@@ -310,6 +420,7 @@ class App_start:
                 a += [itemList[0][:20] + '\t\t' + itemList[2]]
 
             self.varList.set(a)
+
             # 未使用Mult-Thread所以不需要排列
             for itemLists_Deal in self.itemLists_Deals:
                 b += [itemLists_Deal[0][:20] + '\t\t' + itemLists_Deal[2]]
@@ -325,9 +436,6 @@ class App_start:
             self.btnAna.config(state='active')
             self.btnUp.config(state='active')
 
-    def btn_GetProxy(self):
-        pass
-
     def btn_sort_up(self):
         a = []
         b = []
@@ -336,10 +444,10 @@ class App_start:
         for itemList in self.itemLists:
             a += [itemList[0][:20] + '\t\t' + itemList[2]]
         self.varList.set(a)
-        
+
         self.itemLists_Deals = sorted(
             self.itemLists_Deals, key=lambda s: int(s[2][:-1].replace(',', '')), reverse=True)
-        
+
         for itemLists_Deal in self.itemLists_Deals:
             b += [itemLists_Deal[0][:20] + '\t\t' + itemLists_Deal[2]]
         self.varList1.set(b)
@@ -354,17 +462,36 @@ class App_start:
         for itemList in self.itemLists:
             a += [itemList[0][:20] + '\t\t' + itemList[2]]
         self.varList.set(a)
-        
+
         self.itemLists_Deals = sorted(
             self.itemLists_Deals, key=lambda s: int(s[2][:-1].replace(',', '')))
-        
+
         for itemLists_Deal in self.itemLists_Deals:
             b += [itemLists_Deal[0][:20] + '\t\t' + itemLists_Deal[2]]
         self.varList1.set(b)
         self.btnDown.config(state='disable')
         self.btnUp.config(state='active')
-        
+
     def btn_analytics(self):
+        pass
+
+    def btn_GetProxy(self):
+        popup = tk.Tk()
+
+        def windestroy():
+            popup.destroy()
+
+        def wincancel():
+            popup.destroy()
+
+        lab = ttk.Label(popup, text='你將前往下列網址\n' + url)
+        lab.pack()
+        btn = ttk.Button(popup, text="Okay", command=windestroy)
+        btn.pack()
+        btn = ttk.Button(popup, text="Cancel", command=wincancel)
+        btn.pack()
+        popup.mainloop()
+
         pass
 
     # ---進度條---
@@ -412,10 +539,14 @@ def findIn2DTo1D(list2D, find):
 
 # \\MARK: give and get
 # -------取得log---------
+
+
 def get_log_index():
     return log_index
 
 # -------使用log---------
+
+
 def log(text):
     global log_index
     log_index = pagespidy.get_log_index()
@@ -447,10 +578,12 @@ def src_image():
     return src_image
 
 # Exit
+
+
 def closeWindow():
     pagespidy.close_chrome()
     win.destroy()
-    
+
 
 # //MARK: __Main__
 if __name__ == '__main__':
@@ -483,12 +616,12 @@ if __name__ == '__main__':
     f1_search = tk.Frame(win)
     f2_list = tk.Frame(win)
     f3_log = tk.Frame(win)
-    f4_proxies = tk.Frame(win, width=80, height=25)
-    f5_lb01 = tk.Frame(win, width=80, height=40)
-    f6_lb02 = tk.Frame(win, width=80, height=40)
-    f7_up = tk.Frame(win, width=20, height=20)
-    f8_down = tk.Frame(win, width=20, height=20)
-    f9_analytics = tk.Frame(win, width=80, height=25)
+    f4_proxies = tk.Frame(win)
+    f5_lb01 = tk.Frame(win)
+    f6_lb02 = tk.Frame(win)
+    f7_up = tk.Frame(win)
+    f8_down = tk.Frame(win)
+    f9_analytics = tk.Frame(win)
 
     canvas.create_window(650, 580, width=1300, height=50, window=f1_search)
     canvas.create_window(445, 270, width=817, height=433, window=f2_list)
