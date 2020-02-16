@@ -1,14 +1,15 @@
-import tkinter as tk
-from tkinter import StringVar, ttk
-from tkinter import messagebox as mb
 import numpy as np
 import time
-from PIL import ImageTk, Image
 import threading
-from queue import Queue
 import webbrowser
 import pagespidy
 import getproxy
+import changeproxy
+import tkinter as tk
+from tkinter import StringVar, ttk
+from tkinter import messagebox as mb
+from PIL import ImageTk, Image
+from queue import Queue
 from setting import CURRENT_DIR
 from os.path import join
 
@@ -472,27 +473,14 @@ class App_start:
         self.btnDown.config(state='disable')
         self.btnUp.config(state='active')
 
+    # //MARK: analytics popup
     def btn_analytics(self):
         pass
-
+    
+    # //MARK: GetProxy popup
     def btn_GetProxy(self):
-        popup = tk.Tk()
-
-        def windestroy():
-            popup.destroy()
-
-        def wincancel():
-            popup.destroy()
-
-        lab = ttk.Label(popup, text='你將前往下列網址\n' + url)
-        lab.pack()
-        btn = ttk.Button(popup, text="Okay", command=windestroy)
-        btn.pack()
-        btn = ttk.Button(popup, text="Cancel", command=wincancel)
-        btn.pack()
-        popup.mainloop()
-
-        pass
+        t = threading.Thread(target=changeproxy.App(win))
+        t.start()
 
     # ---進度條---
     # def progressBar(self):
