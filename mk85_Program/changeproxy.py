@@ -57,10 +57,9 @@ class App_start:
 
     # //MARK: Label
     def label(self):
-        # title_text = '''
-        # 選擇遊戲時使用的是本地的IP(localhost)\n收尋物品項目時使用的是代理IP\n請使用下列功能更換代理IP\n確保IP不被官方阻擋
-        # '''
-        title_text = '功能開發中暫無功能'
+        title_text = '''
+        選擇遊戲時使用的是本地的IP(localhost)\n收尋物品項目時使用的是代理IP\n請使用下列功能更換代理IP\n確保IP不被官方阻擋
+        '''
         self.label_title = tk.Label(self.f1_label,
                                     width=60,
                                     height=5,
