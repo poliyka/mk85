@@ -130,9 +130,39 @@ class App_start:
     # //MARK: Entry_GUI
     def entrySearchGame(self):
         self.etyGame = ttk.Entry(f1_search, font=('標楷體', 12), width=15)
+        self.etyGame.bind('<Return>',self.etyGameKey)
 
     def entrySearchItem(self):
         self.etyItem = ttk.Entry(f1_search, font=('標楷體', 12), width=15)
+        self.etyItem.bind('<Return>',self.etyItemKey)
+
+    # //MARK: Entry_method
+    def etyGameKey(self,event):
+        if self.etyGame.get() != '':
+            self.btn_hide()
+            t = threading.Thread(target=self.setmenu)
+            t.start()
+
+        else:
+            log('請輸入要查詢的遊戲...')
+    
+    def etyItemKey(self,event):
+        if self.varGames.get() != '請選擇遊戲':
+            if self.etyItem.get() != '':
+                self.btn_hide()
+                t = threading.Thread(target=self.btn_set_lisbox)
+                t.start()
+            else:
+                mb1 = mb.askokcancel('Warning', '沒有輸入收尋條件將會爬取大量數據確定繼續?')
+                if mb1 == True:
+                    self.btn_hide()
+                    t = threading.Thread(target=self.btn_set_lisbox)
+                    t.start()
+                else:
+                    log('搜尋中斷...')
+        else:
+            self.btn_show()
+            log('請選擇遊戲在送出')
 
     # //MARK: Listbox_GUI
     def listbox(self):
@@ -285,7 +315,7 @@ class App_start:
                                  command=self.btn_analytics
                                  )
 
-    # //MARK: 繫結獲取游標焦點事件
+    # //MARK: bind
     def bind(self):
         self.btnUp.bind("<Enter>", self.bind_up_Enter)
         self.btnUp.bind("<Leave>", self.bind_up_Leave)
@@ -371,7 +401,7 @@ class App_start:
 
         else:
             log('請輸入要查詢的遊戲...')
-
+    
     def setmenu(self):
         data = pagespidy.getGameList(self.etyGame.get())
         if data == 'disconnent':
@@ -382,9 +412,9 @@ class App_start:
                     self.games = [i for i in data]
                     self.omGames.set_menu(
                         self.games[0][1], *(i[1] for i in self.games))
-                    log('收尋完成')
+                    log('搜尋完成')
                 except:
-                    log('沒有收尋到相關遊戲')
+                    log('沒有搜尋到相關遊戲')
             else:
                 log('無法取得網頁資料')
 
@@ -585,7 +615,7 @@ if __name__ == '__main__':
     # ------serface-------
     win = tk.Tk()
     win.geometry('1240x600')
-    win.title('RO仙境傳說8591市場快速查詢程式')
+    win.title('RO仙境傳說8591市場快速查詢程式-v1.9')
     # win.configure(bg='LightPink')
 
     # ----圖片變數要在win之後否則error

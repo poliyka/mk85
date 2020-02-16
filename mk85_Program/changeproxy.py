@@ -16,6 +16,8 @@ log_index = []
 varList_log = ''
 lb_log = ''
 num = 1
+host_IP= ''
+proxies_chance_num = 1
 
 with open(proxy_path, 'r', newline='') as f:
     reader = csv.reader(f)
@@ -53,14 +55,15 @@ class App_start:
 
     # //MARK: Label
     def label(self):
-        # title_text = '''選擇遊戲時使用的是本地的IP(localhost)\n收尋物品項目時使用的是代理IP\n請使用下列功能更換代理IP\n確保IP不被官方阻擋
+        # title_text = '''
+        # 選擇遊戲時使用的是本地的IP(localhost)\n收尋物品項目時使用的是代理IP\n請使用下列功能更換代理IP\n確保IP不被官方阻擋
         # '''
-        title_text = '開發中暫無功能'
+        title_text = '功能開發中暫無功能'
         self.label_title = tk.Label(self.f1_label,
                                     width=60,
                                     height=5,
                                     text=title_text,
-                                    font=('標楷體', 36),
+                                    font=('標楷體', 14),
                                     bg='PowderBlue',
                                     fg='MidnightBlue',
                                     anchor='nw',
@@ -125,11 +128,42 @@ class App_start:
                                    justify='left'
                                    )
         
+        self.label_op06 = tk.Label(self.f2_option,
+                                   width=17,
+                                   height=1,
+                                   text='(急速)關閉代理池:',
+                                   font=('標楷體', 12),
+                                   fg='red',
+                                   bg='yellow',
+                                   anchor='nw',
+                                   justify='left'
+                                   )
+        self.label_op06.bind('<Enter>',self.op06_enter)
+        self.label_op06.bind('<Leave>',self.op06_leave)
+    
+    # label bind 
+    def op06_enter(self,bind):
+        self.op06 = tk.Label(self.f2_option,
+                                text='(警告)開啟後本地IP容易被封鎖',
+                                font=('標楷體', 12),
+                                width=30,
+                                height=1,
+                                bg='Pink',
+                                fg='red',
+                                anchor='nw',
+                                justify='left'
+                                )
+        self.op06.place(x=245, y=120)
+
+    def op06_leave(self,bind):
+        self.op06.place_forget()
+    
     
     # //MARK: Radiobutton
     def radio_button(self):
         self.var_yn = tk.IntVar()
         self.var_po = tk.IntVar()
+        self.var_po_open_close = tk.IntVar()
         self.rd_y = tk.Radiobutton(self.f2_option,
                                    text='Y',
                                    font=('標楷體', 10),
@@ -168,8 +202,25 @@ class App_start:
                                       value=3,
                                       command=self.rd_po_selection
                                       )
+        
+        self.rd_po_open = tk.Radiobutton(self.f2_option,
+                                   text='打開',
+                                   font=('標楷體', 12),
+                                   variable=self.var_po_open_close,
+                                   value=1,
+                                   command=self.rd_po_open_close_selection
+                                   )
+        self.rd_po_open.select()
 
-    # radioButton method
+        self.rd_po_close = tk.Radiobutton(self.f2_option,
+                                   text='關閉',
+                                   font=('標楷體', 12),
+                                   variable=self.var_po_open_close,
+                                   value=0,
+                                   command=self.rd_po_open_close_selection
+                                   )
+
+    # //MARK: radioButton method
     def rd_yn_selection(self):
         if self.var_yn.get() == 1:
             self.entry_op01.config(state='normal')
@@ -190,6 +241,18 @@ class App_start:
         if self.var_po.get() ==3:
             num = 3
             
+    def rd_po_open_close_selection(self):
+        if self.var_po_open_close.get() == 1:
+            self.rd_po01.config(state='active')
+            self.rd_po02.config(state='active')
+            self.rd_po03.config(state='active')
+            self.btn_proxies_ip_change.config(state='active')
+            
+        if self.var_po_open_close.get() == 0:
+            self.rd_po01.config(state='disable')
+            self.rd_po02.config(state='disable')
+            self.rd_po03.config(state='disable')
+            self.btn_proxies_ip_change.config(state='disable')
 
     # //MARK: Entry
     def entry(self):
@@ -225,7 +288,6 @@ class App_start:
         self.bn_en01.place_forget()
 
     # //MARK: button
-
     def button(self):
         self.btn_host_ip_change = ttk.Button(self.f2_option,
                                              text='更換代理',
@@ -274,11 +336,13 @@ class App_start:
         t.start()
 
     def btn_copy_click(self):
-        pyperclip.copy(self.lb_proxies.get(self.lb_proxies.curselection()[0]))
-        log('已複製第('+str(self.lb_proxies.curselection()[0]+1)+')項代理')
-
+        try:
+            pyperclip.copy(self.lb_proxies.get(self.lb_proxies.curselection()[0]))
+            log('已複製第('+str(self.lb_proxies.curselection()[0]+1)+')項代理')
+        except:
+            log('error:請選擇一個代理網址')
+            
     # //MARK: Listbox
-
     def listbox(self):
         global varList_log
         global lb_log
@@ -330,9 +394,12 @@ class App_start:
         self.rd_po03.place(x=15, y=190)
         self.btn_proxies_ip_change.place(x=15, y=220)
         self.label_op05.place(x=245, y=230)
+        self.label_op06.place(x=245, y=100)
         self.btn_copy.place(x=400, y=225)
         lb_log.pack(side='left')
         self.lb_proxies.pack(side='right')
+        self.rd_po_open.place(x=260, y=130)
+        self.rd_po_close.place(x=260, y=160)
 
 
 # //MARK: GUI_surface
@@ -357,3 +424,9 @@ def App(win):
 
     App_start(f1_label, f2_option, f3_log)
     getproxy.set_var_Log(varList_log,lb_log)
+    
+    # 測試用
+if __name__ == '__main__':
+    win = tk.Tk()
+    App(win)
+    win.mainloop()

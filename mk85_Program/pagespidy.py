@@ -28,6 +28,7 @@ gkey = ''
 count = 0
 check_int = 1 
 check_loop = False
+check = True
 # -------取得代理--------
 proxy_List = []
 with open(proxy_path, 'r', newline='') as f:
@@ -269,19 +270,26 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
         'searchKey': searchKey,
     }
     # 更換代理IP
-    check = False
-    while check == False:
-        try:
-            poxy_url = random.choice(proxy_List)
-            proxies = {
-                poxy_url.split(':')[0]: poxy_url
-            }
-            resp = requests.get(
-                url, form_data, headers=headers, proxies=proxies)
-            if resp.status_code == 200:
-                check = True
-        except:
-            check = False
+    global check
+    if check == False:
+
+        check_conn == False
+        while check_conn == False:
+            try:
+                poxy_url = random.choice(proxy_List)
+                proxies = {
+                    poxy_url.split(':')[0]: poxy_url
+                }
+                resp = requests.get(
+                    url, form_data, headers=headers, proxies=proxies)
+                if resp.status_code == 200:
+                    check_conn = True
+            except:
+                check_conn = False
+
+    else:
+        resp = requests.get(
+                    url, form_data, headers=headers)
 
     soup = BeautifulSoup(resp.text, 'lxml')
     # 第一頁資料
@@ -306,7 +314,7 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
 
     for th in thread:
         th.start()
-        time.sleep(np.random.randint(1,3))
+        # time.sleep(np.random.randint(1,3))
     for th in thread:
         th.join()
 
@@ -334,20 +342,28 @@ def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, sea
         'totalRows': str(totalRows),
     }
 
-    check = False
-    while check == False:
-        try:
-            poxy_url = random.choice(proxy_List)
-            proxies = {
-                poxy_url.split(':')[0]: poxy_url
-            }
-            resp = requests.get(
-                url, form_data, headers=headers, proxies=proxies)
-            if resp.status_code == 200:
-                check = True
-        except:
-            check = False
-
+    # check 控制代理池開關
+    global check
+    print(check)
+    if check == False:
+        check_conn == False
+        while check_conn == False:
+            try:
+                poxy_url = random.choice(proxy_List)
+                proxies = {
+                    poxy_url.split(':')[0]: poxy_url
+                }
+                resp = requests.get(
+                    url, form_data, headers=headers, proxies=proxies)
+                if resp.status_code == 200:
+                    check_conn = True
+            except:
+                check_conn = False
+    else:
+        resp = requests.get(
+                    url, form_data, headers=headers)
+        
+    
     soup = BeautifulSoup(resp.text, 'lxml')
     links = soup.find(id='wc_list').find_all('a', class_='detail_link')
     itemList = []
@@ -384,19 +400,26 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
         'uid': '',
     }
     # 更換代理IP
-    check = False
-    while check == False:
-        try:
-            poxy_url = random.choice(proxy_List)
-            proxies = {
-                poxy_url.split(':')[0]: poxy_url
-            }
-            resp = requests.get(
-                url, form_data, headers=headers, proxies=proxies)
-            if resp.status_code == 200:
-                check = True
-        except:
-            check = False
+    global check
+    if check == False:
+
+        check_conn == False
+        while check_conn == False:
+            try:
+                poxy_url = random.choice(proxy_List)
+                proxies = {
+                    poxy_url.split(':')[0]: poxy_url
+                }
+                resp = requests.get(
+                    url, form_data, headers=headers, proxies=proxies)
+                if resp.status_code == 200:
+                    check_conn = True
+            except:
+                check_conn = False
+
+    else:
+        resp = requests.get(
+                    url, form_data, headers=headers)
 
     soup = BeautifulSoup(resp.text, 'lxml')
 
@@ -429,19 +452,25 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
         }
 
         # 更換代理IP
-        check = False
-        while check == False:
-            try:
-                poxy_url = random.choice(proxy_List)
-                proxies = {
-                    poxy_url.split(':')[0]: poxy_url
-                }
-                resp = requests.get(
-                    url, form_data, headers=headers, proxies=proxies)
-                if resp.status_code == 200:
-                    check = True
-            except:
-                check = False
+        if check == False:
+
+            check_conn == False
+            while check_conn == False:
+                try:
+                    poxy_url = random.choice(proxy_List)
+                    proxies = {
+                        poxy_url.split(':')[0]: poxy_url
+                    }
+                    resp = requests.get(
+                        url, form_data, headers=headers, proxies=proxies)
+                    if resp.status_code == 200:
+                        check_conn = True
+                except:
+                    check_conn = False
+
+        else:
+            resp = requests.get(
+                        url, form_data, headers=headers)
 
         soup = BeautifulSoup(resp.text, 'lxml')
         links = soup.find(id='wc_list').find_all('a', class_='detail_link')
