@@ -7,16 +7,18 @@
 - [ ] 點擊項目新增基本資料
 - [ ] (研究)左側標籤
 - [ ] (研究)同步更新
+- [ ] 每日自動爬取
 
 * * *
 >已完成
 
 --ver1.9 (2020/02/16)
 
-- [X] 代理按鈕實做(進度80%)
+- [X] 代理按鈕實做
 - [X] 新增複製貼上功能(pyperclip.copy)
 - [X] 實現在輸入框中可以鍵入Enter直接搜尋
-- [ ] chromeDriver 更換代理功能
+- [X] 急速搜尋功能
+- [X] chromeDriver 更換代理功能
   
 --ver1.8 (2020/02/13)
 
@@ -67,6 +69,7 @@
 5. 使用Chrome瀏覽器並更新至版本 80.0.3987.87 (正式版本) (64 位元)
 6. 沒有安裝相關套件? 沒問題! 我放了一個 market8591.exe 直接運行就可以拉
 7. 我的 [Github](https://github.com/poliyka/mk85.git)
+8. 如果要無限制開啟急速模式，請使用手機網路wifi(一直更換手機IP即可)
 
 使用方式 :
 
@@ -101,3 +104,8 @@
 ([手動import資源參考](https://codingdailyblog.wordpress.com/2018/03/24/python-pyinstaller%E6%89%93%E5%8C%85exe%E4%B8%80%E4%BD%B5%E5%8C%85%E5%90%AB%E7%85%A7%E7%89%87%E6%AA%94%E6%8A%80%E5%B7%A7/))
 
     3.再次輸入 pyinstaller -F -w market8591.spec
+
+    聯成工作媒合:
+    2/21 板橋
+    3/20 新竹
+    7.8月 北區

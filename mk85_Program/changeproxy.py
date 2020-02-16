@@ -2,7 +2,9 @@ import tkinter as tk
 import getproxy
 import csv
 import pyperclip
+import pagespidy
 import threading
+import re
 from tkinter import StringVar, ttk
 from setting import CURRENT_DIR
 from os.path import join
@@ -16,8 +18,8 @@ log_index = []
 varList_log = ''
 lb_log = ''
 num = 1
-host_IP= ''
-proxies_chance_num = 1
+ip_pattan = r'^(http://|HTTP://|https://|HTTPS://|socks4://|SOCKS4://|socks5://|SOCKS5://)((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}(\:(\d{1,}))$'
+
 
 with open(proxy_path, 'r', newline='') as f:
     reader = csv.reader(f)
@@ -129,9 +131,9 @@ class App_start:
                                    )
         
         self.label_op06 = tk.Label(self.f2_option,
-                                   width=17,
+                                   width=21,
                                    height=1,
-                                   text='(急速)關閉代理池:',
+                                   text='(急速爬取)關閉代理池:',
                                    font=('標楷體', 12),
                                    fg='red',
                                    bg='yellow',
@@ -204,7 +206,7 @@ class App_start:
                                       )
         
         self.rd_po_open = tk.Radiobutton(self.f2_option,
-                                   text='打開',
+                                   text='打開代理池',
                                    font=('標楷體', 12),
                                    variable=self.var_po_open_close,
                                    value=1,
@@ -213,7 +215,7 @@ class App_start:
         self.rd_po_open.select()
 
         self.rd_po_close = tk.Radiobutton(self.f2_option,
-                                   text='關閉',
+                                   text='關閉代理池',
                                    font=('標楷體', 12),
                                    variable=self.var_po_open_close,
                                    value=0,
@@ -225,8 +227,7 @@ class App_start:
         if self.var_yn.get() == 1:
             self.entry_op01.config(state='normal')
             self.btn_host_ip_change.config(state='active')
-            log('本地網路代理開啟'
-                )
+            log('本地網路代理開啟')
         if self.var_yn.get() == 0:
             self.entry_op01.config(state='disable')
             self.btn_host_ip_change.config(state='disabled')
@@ -247,13 +248,15 @@ class App_start:
             self.rd_po02.config(state='active')
             self.rd_po03.config(state='active')
             self.btn_proxies_ip_change.config(state='active')
-            
+            pagespidy.set_check_setting(True)
+                        
         if self.var_po_open_close.get() == 0:
             self.rd_po01.config(state='disable')
             self.rd_po02.config(state='disable')
             self.rd_po03.config(state='disable')
             self.btn_proxies_ip_change.config(state='disable')
-
+            pagespidy.set_check_setting(False)
+            
     # //MARK: Entry
     def entry(self):
         self.var_en01 = tk.StringVar()
@@ -273,7 +276,7 @@ class App_start:
 
     def bind_en_Enter(self, bind):
         self.bn_en01 = tk.Label(self.f2_option,
-                                text='http:\\\\xxx.xxx.xxx.xxx:xxxx\n協定:\\\\IP:port',
+                                text='http://xxx.xxx.xxx.xxx:xxxx\n協定://IP:port',
                                 font=('標楷體', 12),
                                 width=30,
                                 height=2,
@@ -310,7 +313,11 @@ class App_start:
 
     # button click method
     def btn_host_ip_change_click(self):
-        pass
+        if re.match(ip_pattan, self.entry_op01.get()) != None:
+            pagespidy.set_host_ip(self.entry_op01.get())
+            log('本地網路已更變')
+        else:
+            log('請輸入正確的IP地址')
     
     def thread_log(self):
         global proxy_path

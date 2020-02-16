@@ -28,7 +28,9 @@ gkey = ''
 count = 0
 check_int = 1 
 check_loop = False
-check = True
+check_setting = True
+host_ip = HOST
+
 # -------取得代理--------
 proxy_List = []
 with open(proxy_path, 'r', newline='') as f:
@@ -46,7 +48,6 @@ def set_var_Log(var_Log1,list_log1):
 def get_log_index():
     return log_index
 
-    
 # -------使用log---------
 def log(text):
     global log_index
@@ -71,13 +72,22 @@ def log_count():
             if check_loop == True:
                 log_index.append('正在嘗試連線...(' + str(i) + ')')
                 var_Log.set(log_index)
+                list_log.see("end")
                 time.sleep(1)
                 list_log.selection_clear(0,"end")
                 list_log.selection_set("end")
-                list_log.see("end")
                 log_index.pop()
             else:
                 break
+            
+# ---setting---
+def set_check_setting(setting):
+    global check_setting
+    check_setting = setting
+
+def set_host_ip(setting):
+    global host_ip
+    host_ip = setting    
 
 # ---Chrome----
 def close_chrome():
@@ -102,7 +112,7 @@ def loop():
     check_int += 1
     
     if check_int == 4:
-        log('無法連線網頁...請確定網路(非代理)')
+        log('無法連線網頁...請確定網路(本地)')
     else:
         getGameList(gkey)
         
@@ -139,7 +149,8 @@ def getGameList(key):
         # 植入代理
         # options.add_argument('--proxy-server={}'.format(PROXY))
         # 植入USER_AGENT
-        options.add_argument("user-agent={}".format(HOST))
+        print(host_ip)
+        options.add_argument("user-agent={}".format(host_ip))
         # 取消加載圖片提高效率
         options.add_experimental_option("prefs", prefs)
 
@@ -156,6 +167,7 @@ def getGameList(key):
             loop()
                 
             if check_int == 4:
+                check_int = 1
                 return 'disconnent'
         else:            
             count += 1
@@ -270,8 +282,8 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
         'searchKey': searchKey,
     }
     # 更換代理IP
-    global check
-    if check == False:
+    global check_setting
+    if check_setting == True:
 
         check_conn == False
         while check_conn == False:
@@ -314,7 +326,9 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
 
     for th in thread:
         th.start()
-        # time.sleep(np.random.randint(1,3))
+        if check_setting == True:
+            time.sleep(np.random.randint(1,3))
+            
     for th in thread:
         th.join()
 
@@ -343,9 +357,9 @@ def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, sea
     }
 
     # check 控制代理池開關
-    global check
-    print(check)
-    if check == False:
+    global check_setting
+    if check_setting == True:
+        
         check_conn == False
         while check_conn == False:
             try:
@@ -400,8 +414,8 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
         'uid': '',
     }
     # 更換代理IP
-    global check
-    if check == False:
+    global check_setting
+    if check_setting == True:
 
         check_conn == False
         while check_conn == False:
@@ -452,7 +466,7 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
         }
 
         # 更換代理IP
-        if check == False:
+        if check_setting == True:
 
             check_conn == False
             while check_conn == False:

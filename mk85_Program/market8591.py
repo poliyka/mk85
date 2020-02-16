@@ -220,7 +220,7 @@ class App_start:
                               activestyle='none'
                               )
 
-        # 有scrollbar版本
+        # 有scrollbar版本(待研究)
         # self.scrollbar = Scrollbar(f3_log)
         # self.scrollbar.pack(side='right', fill='y')
         # list_log = tk.Listbox(f3_log, listvariable=var_Log, font=(
@@ -229,7 +229,8 @@ class App_start:
 
     # //MARK: popupWindow_GUI
     def clickLink(self, event):
-        popup = tk.Tk()
+        popup = tk.Toplevel(win)
+        popup.title('(待交易)詳細資訊')
         url = self.itemLists[self.lb.curselection()[0]][1]
 
         def windestroy():
@@ -248,7 +249,8 @@ class App_start:
         popup.mainloop()
 
     def clickLink1(self, event):
-        popup = tk.Tk()
+        popup = tk.Toplevel(win)
+        popup.title('(已完成)詳細資訊')
         url = self.itemLists_Deals[self.lb1.curselection()[0]][1]
 
         def windestroy():
