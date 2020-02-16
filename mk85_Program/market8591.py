@@ -513,6 +513,8 @@ class App_start:
     def btn_GetProxy(self):
         t = threading.Thread(target=changeproxy.App(win))
         t.start()
+        time.sleep(0.5)
+        changeproxy.set_host_entry(pagespidy.get_host_ip())
 
     # ---進度條---
     # def progressBar(self):

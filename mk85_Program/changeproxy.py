@@ -6,7 +6,7 @@ import pagespidy
 import threading
 import re
 from tkinter import StringVar, ttk
-from setting import CURRENT_DIR
+from setting import CURRENT_DIR,HOST
 from os.path import join
 from tkinter import messagebox as mb
 
@@ -18,6 +18,12 @@ log_index = []
 varList_log = ''
 lb_log = ''
 num = 1
+host_ip = HOST
+rd_n = ''
+rd_y = ''
+var_en01 = ''
+btn_host_ip_change = ''
+entry_op01 = ''
 ip_pattan = r'^(http://|HTTP://|https://|HTTPS://|socks4://|SOCKS4://|socks5://|SOCKS5://)((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}(\:(\d{1,}))$'
 
 
@@ -39,6 +45,22 @@ def log(text):
     # 以下兩個方法都是focus最後一行
     lb_log.see("end")
     # list_log.yview_moveto(1)
+    
+def set_host_entry(ip):
+    global host_ip
+    global entry_op01
+    global btn_host_ip_change
+    host_ip = ip
+    print(host_ip)
+    if host_ip == HOST:
+        rd_n.select()
+        entry_op01.config(state='disable')
+        btn_host_ip_change.config(state='disabled')
+    else:
+        rd_y.select()
+        var_en01.set(host_ip)
+        entry_op01.config(state='normal')
+        btn_host_ip_change.config(state='active')
 
 
 class App_start:
@@ -57,9 +79,7 @@ class App_start:
 
     # //MARK: Label
     def label(self):
-        title_text = '''
-        選擇遊戲時使用的是本地的IP(localhost)\n收尋物品項目時使用的是代理IP\n請使用下列功能更換代理IP\n確保IP不被官方阻擋
-        '''
+        title_text = '''選擇遊戲時使用的是本地的IP(localhost)\n收尋物品項目時使用的是代理IP\n請使用下列功能更換代理IP\n確保IP不被官方阻擋'''
         self.label_title = tk.Label(self.f1_label,
                                     width=60,
                                     height=5,
@@ -162,10 +182,13 @@ class App_start:
     
     # //MARK: Radiobutton
     def radio_button(self):
+        global rd_n
+        global rd_y
+        
         self.var_yn = tk.IntVar()
         self.var_po = tk.IntVar()
         self.var_po_open_close = tk.IntVar()
-        self.rd_y = tk.Radiobutton(self.f2_option,
+        rd_y = tk.Radiobutton(self.f2_option,
                                    text='Y',
                                    font=('標楷體', 10),
                                    variable=self.var_yn,
@@ -173,14 +196,13 @@ class App_start:
                                    command=self.rd_yn_selection
                                    )
 
-        self.rd_n = tk.Radiobutton(self.f2_option,
+        rd_n = tk.Radiobutton(self.f2_option,
                                    text='N',
                                    font=('標楷體', 10),
                                    variable=self.var_yn,
                                    value=0,
                                    command=self.rd_yn_selection
                                    )
-        self.rd_n.select()
 
         self.rd_po01 = tk.Radiobutton(self.f2_option,
                                       variable=self.var_po,
@@ -188,7 +210,6 @@ class App_start:
                                       value=1,
                                       command=self.rd_po_selection
                                       )
-        self.rd_po01.select()
 
         self.rd_po02 = tk.Radiobutton(self.f2_option,
                                       variable=self.var_po,
@@ -223,13 +244,15 @@ class App_start:
 
     # //MARK: radioButton method
     def rd_yn_selection(self):
+        global entry_op01
+        global btn_host_ip_change
         if self.var_yn.get() == 1:
-            self.entry_op01.config(state='normal')
-            self.btn_host_ip_change.config(state='active')
+            entry_op01.config(state='normal')
+            btn_host_ip_change.config(state='active')
             log('本地網路代理開啟')
         if self.var_yn.get() == 0:
-            self.entry_op01.config(state='disable')
-            self.btn_host_ip_change.config(state='disabled')
+            entry_op01.config(state='disable')
+            btn_host_ip_change.config(state='disabled')
             log('本地網路代理關閉')
         
     def rd_po_selection(self):
@@ -258,10 +281,12 @@ class App_start:
             
     # //MARK: Entry
     def entry(self):
-        self.var_en01 = tk.StringVar()
-        self.entry_op01 = tk.Entry(self.f2_option,
+        global var_en01
+        global entry_op01
+        var_en01 = tk.StringVar()
+        entry_op01 = tk.Entry(self.f2_option,
                                    width=32,
-                                   textvariable=self.var_en01,
+                                   textvariable=var_en01,
                                    font=('標楷體', 12),
                                    fg='blue',
                                    state='disable',
@@ -270,8 +295,8 @@ class App_start:
 
     # bind_entry event
     def bind_entry(self):
-        self.entry_op01.bind("<Enter>", self.bind_en_Enter)
-        self.entry_op01.bind("<Leave>", self.bind_en_Leave)
+        entry_op01.bind("<Enter>", self.bind_en_Enter)
+        entry_op01.bind("<Leave>", self.bind_en_Leave)
 
     def bind_en_Enter(self, bind):
         self.bn_en01 = tk.Label(self.f2_option,
@@ -291,7 +316,8 @@ class App_start:
 
     # //MARK: button
     def button(self):
-        self.btn_host_ip_change = ttk.Button(self.f2_option,
+        global btn_host_ip_change
+        btn_host_ip_change = ttk.Button(self.f2_option,
                                              text='更換代理',
                                              width=10, cursor='hand2',
                                              state='disable',
@@ -312,8 +338,9 @@ class App_start:
 
     # button click method
     def btn_host_ip_change_click(self):
-        if re.match(ip_pattan, self.entry_op01.get()) != None:
-            pagespidy.set_host_ip(self.entry_op01.get())
+        if re.match(ip_pattan, entry_op01.get()) != None:
+            pagespidy.set_host_ip(entry_op01.get())
+            host_ip = entry_op01.get()
             log('本地網路已更變')
         else:
             log('請輸入正確的IP地址')
@@ -389,11 +416,11 @@ class App_start:
         self.label_title.place(x=0, y=0)
         self.label_op01.place(x=0, y=0)
         self.label_op02.place(x=0, y=25)
-        self.rd_y.place(x=410, y=25)
-        self.rd_n.place(x=445, y=25)
+        rd_y.place(x=410, y=25)
+        rd_n.place(x=445, y=25)
         self.label_op03.place(x=0, y=50)
-        self.entry_op01.place(x=100, y=53)
-        self.btn_host_ip_change.place(x=380, y=50)
+        entry_op01.place(x=100, y=53)
+        btn_host_ip_change.place(x=380, y=50)
         self.label_op04.place(x=0, y=100)
         self.rd_po01.place(x=15, y=130)
         self.rd_po02.place(x=15, y=160)
@@ -408,8 +435,11 @@ class App_start:
         self.rd_po_close.place(x=260, y=160)
 
 
-# //MARK: GUI_surface
 
+
+
+
+# //MARK: GUI_surface
 def App(win):
     newwin = tk.Toplevel(win)
     newwin.geometry('500x700')
@@ -431,6 +461,13 @@ def App(win):
     App_start(f1_label, f2_option, f3_log)
     getproxy.set_var_Log(varList_log,lb_log)
     
+    # close windows
+    def closeWindow():
+        global log_index
+        log_index = []
+        newwin.destroy()
+        
+    newwin.protocol('WM_DELETE_WINDOW', closeWindow)
     # 測試用
 if __name__ == '__main__':
     win = tk.Tk()

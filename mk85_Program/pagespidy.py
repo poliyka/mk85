@@ -48,6 +48,10 @@ def set_var_Log(var_Log1,list_log1):
 def get_log_index():
     return log_index
 
+def get_host_ip():
+    global host_ip
+    return host_ip
+
 # -------使用log---------
 def log(text):
     global log_index
