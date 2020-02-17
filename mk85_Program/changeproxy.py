@@ -244,6 +244,7 @@ class App_start:
 
     # //MARK: radioButton method
     def rd_yn_selection(self):
+        global host_ip
         global entry_op01
         global btn_host_ip_change
         if self.var_yn.get() == 1:
@@ -253,6 +254,8 @@ class App_start:
         if self.var_yn.get() == 0:
             entry_op01.config(state='disable')
             btn_host_ip_change.config(state='disabled')
+            host_ip = HOST
+            pagespidy.set_host_ip(host_ip)
             log('本地網路代理關閉')
         
     def rd_po_selection(self):

@@ -289,7 +289,7 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
     global check_setting
     if check_setting == True:
 
-        check_conn == False
+        check_conn = False
         while check_conn == False:
             try:
                 poxy_url = random.choice(proxy_List)
@@ -364,7 +364,7 @@ def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, sea
     global check_setting
     if check_setting == True:
         
-        check_conn == False
+        check_conn = False
         while check_conn == False:
             try:
                 poxy_url = random.choice(proxy_List)
@@ -421,7 +421,7 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
     global check_setting
     if check_setting == True:
 
-        check_conn == False
+        check_conn = False
         while check_conn == False:
             try:
                 poxy_url = random.choice(proxy_List)
@@ -472,7 +472,7 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
         # 更換代理IP
         if check_setting == True:
 
-            check_conn == False
+            check_conn = False
             while check_conn == False:
                 try:
                     poxy_url = random.choice(proxy_List)
