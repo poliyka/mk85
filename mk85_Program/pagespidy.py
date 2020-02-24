@@ -9,10 +9,10 @@ import os
 from queue import Queue
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from setting import USER_AGENT,CURRENT_DIR,CONNECT_WAITTING,HOST
+from setting import USER_AGENT, CURRENT_DIR, CONNECT_WAITTING, HOST
 from os.path import join
 
-#//MARK: init_path
+# //MARK: init_path
 chromedriver_path = join(CURRENT_DIR, "./src/webdriver/chromedriver.exe")
 proxy_path = join(CURRENT_DIR, "./src/db/proxy_List.csv")
 # ---------init-----------
@@ -26,7 +26,7 @@ log_index = []
 chrome = ''
 gkey = ''
 count = 0
-check_int = 1 
+check_int = 1
 check_loop = False
 check_setting = True
 host_ip = HOST
@@ -39,88 +39,101 @@ with open(proxy_path, 'r', newline='') as f:
         proxy_List += i
 
 # -------取得log---------
-def set_var_Log(var_Log1,list_log1):
+
+
+def set_var_Log(var_Log1, list_log1):
     global var_Log
     global list_log
     var_Log = var_Log1
     list_log = list_log1
-    
+
+
 def get_log_index():
     return log_index
+
 
 def get_host_ip():
     global host_ip
     return host_ip
 
 # -------使用log---------
+
+
 def log(text):
     global log_index
     log_index.append(text)
     var_Log.set(log_index)
-    list_log.selection_clear(0,"end")
+    list_log.selection_clear(0, "end")
     list_log.selection_set("end")
     # 以下兩個方法都是focus最後一行
     list_log.see("end")
     # list_log.yview_moveto(1)
 
+
 def set_check_loop():
     global check_loop
     check_loop = False
-    
+
+
 def log_count():
     global log_index
     global COOKIES
     global check_loop
-    for i in range(CONNECT_WAITTING,-1,-1):
+    for i in range(CONNECT_WAITTING, -1, -1):
         if COOKIES == []:
             if check_loop == True:
                 log_index.append('正在嘗試連線...(' + str(i) + ')')
                 var_Log.set(log_index)
                 list_log.see("end")
                 time.sleep(1)
-                list_log.selection_clear(0,"end")
+                list_log.selection_clear(0, "end")
                 list_log.selection_set("end")
                 log_index.pop()
             else:
                 break
-            
+
 # ---setting---
+
+
 def set_check_setting(setting):
     global check_setting
     check_setting = setting
 
+
 def set_host_ip(setting):
     global host_ip
-    host_ip = setting    
+    host_ip = setting
 
 # ---Chrome----
+
+
 def close_chrome():
     global chrome
     global check_loop
-    
+
     if check_loop != False:
         while chrome == '':
             continue
         chrome.quit()
 
 
-
-
-# -------mothod---------- 
+# -------mothod----------
 def loop():
-    global gkey 
+    global gkey
     global check_int
     global chrome
     log('連線失敗...嘗試重新連線(' + str(check_int) + ')')
     chrome.quit()
     check_int += 1
-    
+
     if check_int == 4:
         log('無法連線網頁...請確定網路(本地)')
     else:
         getGameList(gkey)
-        
+
 # //MARK: 取得遊戲目錄
+
+
 def getGameList(key):
     global COOKIES
     global chrome
@@ -129,19 +142,19 @@ def getGameList(key):
     global check_int
     global check_loop
     global gkey
-    
+
     gkey = key
     # 判斷是否初次開啟
     if count == 0:
         # log 倒數
         check_loop = True
-        t = threading.Thread(target= log_count)
+        t = threading.Thread(target=log_count)
         t.start()
-        
+
         url = 'https://www.8591.com.tw/'
         # url = 'https://www.google.com.tw/'
         prefs = {"profile.managed_default_content_settings.images": 2}
-        
+
         # 網頁selenium,Option
         options = webdriver.ChromeOptions()
         # 關閉顯示視窗
@@ -169,11 +182,11 @@ def getGameList(key):
             time.sleep(1)
             check_loop = True
             loop()
-                
+
             if check_int == 4:
                 check_int = 1
                 return 'disconnent'
-        else:            
+        else:
             count += 1
             # 使用者輸入關鍵字取得遊戲列表
             gameSerchXpath = '/html/body/div[2]/div[3]/form/div/div[1]/input[2]'
@@ -188,8 +201,9 @@ def getGameList(key):
                 gameList = []
                 for i, li in enumerate(lis):
                     if i != 0:
-                        gameList.append([li['val'].strip('_'), li.text.strip()])
-                
+                        gameList.append(
+                            [li['val'].strip('_'), li.text.strip()])
+
                 check_int = 1
                 return gameList
             else:
@@ -211,7 +225,7 @@ def getGameList(key):
             for i, li in enumerate(lis):
                 if i != 0:
                     gameList.append([li['val'].strip('_'), li.text.strip()])
-            
+
             check_int = 1
             return gameList
         else:
@@ -220,6 +234,8 @@ def getGameList(key):
             return 'error'
 
 # //MARK: 用game收尋結果取得Server資料
+
+
 def getOtherList(gameName):
     global COOKIES
     global chrome
@@ -305,7 +321,7 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
 
     else:
         resp = requests.get(
-                    url, form_data, headers=headers)
+            url, form_data, headers=headers)
 
     soup = BeautifulSoup(resp.text, 'lxml')
     # 第一頁資料
@@ -331,8 +347,8 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
     for th in thread:
         th.start()
         if check_setting == True:
-            time.sleep(np.random.randint(1,3))
-            
+            time.sleep(np.random.randint(1, 3))
+
     for th in thread:
         th.join()
 
@@ -344,6 +360,7 @@ def getPageIndex(searchGame, searchServer='', searchType='', searchKey=''):
 
     log('費時:' + str(round((time.time()-ts), 5)) + '秒')
     return itemList, itemList_deal
+
 
 # //MARK: 取得頁面資料(已交易)
 def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, searchKey, firstRow, totalRows, q):
@@ -363,7 +380,7 @@ def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, sea
     # check 控制代理池開關
     global check_setting
     if check_setting == True:
-        
+
         check_conn = False
         while check_conn == False:
             try:
@@ -379,9 +396,8 @@ def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, sea
                 check_conn = False
     else:
         resp = requests.get(
-                    url, form_data, headers=headers)
-        
-    
+            url, form_data, headers=headers)
+
     soup = BeautifulSoup(resp.text, 'lxml')
     links = soup.find(id='wc_list').find_all('a', class_='detail_link')
     itemList = []
@@ -393,16 +409,19 @@ def thread_1(url, headers, proxy_List, searchGame, searchServer, searchType, sea
     moneys = soup.find(id='wc_list').find_all('b')
     for i, money in enumerate(moneys):
         itemList[i].append(money.text.strip())
-    
+
     if totalRows != 0:
-        log('(待交易)第' + str(int(firstRow/21)+1) + '頁/第' + str(int(totalRows/21) if totalRows%21 == 0 
-                                                           else (int(totalRows/21)+1)) + '頁')
+        log('(待交易)第' + str(int(firstRow/21)+1) + '頁/第'
+            + str(int(totalRows/21) if totalRows % 21 == 0 else (int(totalRows/21)+1)) + '頁')
     else:
-        log('(待交易)第' + str(int(firstRow/21)+1) + '頁/第' + str(int(firstRow/21)+1) + '頁')
-            
+        log('(待交易)第' + str(int(firstRow/21)+1) +
+            '頁/第' + str(int(firstRow/21)+1) + '頁')
+
     q.put(itemList)
 
 # //MARK: 取得頁面資料(已交易)
+
+
 def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
     url = 'https://www.8591.com.tw/mallList-list.html'
 
@@ -437,14 +456,14 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
 
     else:
         resp = requests.get(
-                    url, form_data, headers=headers)
+            url, form_data, headers=headers)
 
     soup = BeautifulSoup(resp.text, 'lxml')
 
     # 第一頁資料
     links = soup.find(id='wc_list').find_all('a', class_='detail_link')
     itemList_deal = []
-    count = 0
+    
 
     try:
         span = soup.find('span', class_='R')
@@ -488,24 +507,28 @@ def getPageIndex_Deal(searchGame, searchServer='', searchType='', searchKey=''):
 
         else:
             resp = requests.get(
-                        url, form_data, headers=headers)
+                url, form_data, headers=headers)
 
         soup = BeautifulSoup(resp.text, 'lxml')
         links = soup.find(id='wc_list').find_all('a', class_='detail_link')
-
-        for link in links:
-            itemList_deal.append(
-                [link['title'], 'https://www.8591.com.tw/' + link['href']])
-
         moneys = soup.find(id='wc_list').find_all('b')
-        for money in moneys:
-            itemList_deal[count].append(money.text.strip())
-            count += 1
+        dealeds = soup.find_all('span',class_='ft-left')
+        b = []
+        for dealed in dealeds[::2]:
+            a = dealed.text.strip().split(' ')
+            b.append([a[0].replace('-','/'),a[1]])
+        
+        for i,link in enumerate(links):
+            itemList_deal.append(
+                [link['title'], 'https://www.8591.com.tw/' + link['href'], moneys[i].text.strip(), b[i]])
+
+
         firstRow += 21
         if totalRows != 0:
-            log('(已交易)第' + str(int(firstRow/21)) + '頁/第' + str(int(totalRows/21) if totalRows%21 == 0 
-                                                           else (int(totalRows/21)+ 1)) + '頁')
+            log('(已交易)第' + str(int(firstRow/21)) + '頁/第'
+                + str(int(totalRows/21) if totalRows % 21 == 0 else (int(totalRows/21) + 1)) + '頁')
         else:
-            log('(已交易)第' + str(int(firstRow/21)) + '頁/第' + str(int(firstRow/21)) + '頁')
-            
+            log('(已交易)第' + str(int(firstRow/21)) +
+                '頁/第' + str(int(firstRow/21)) + '頁')
+
     q1.put(itemList_deal)
