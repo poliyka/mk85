@@ -5,6 +5,7 @@ import webbrowser
 import pagespidy
 import getproxy
 import changeproxy
+import detail_gui
 import tkinter as tk
 from tkinter import StringVar, ttk
 from tkinter import messagebox as mb
@@ -199,7 +200,7 @@ class App_start:
                               )
 
         self.lb.bind('<Double-Button-1>', self.clickLink)
-        self.lb1.bind('<Double-Button-1>', self.clickLink1)
+        self.lb1.bind('<Double-Button-1>', self.clickLink_deal)
 
     def log_place(self):
         global var_Log
@@ -229,45 +230,16 @@ class App_start:
 
     # //MARK: popupWindow_GUI
     def clickLink(self, event):
-        popup = tk.Toplevel(win)
-        popup.title('(待交易)詳細資訊')
         url = self.itemLists[self.lb.curselection()[0]][1]
+        title = self.itemLists[self.lb.curselection()[0]][0]
+        detail_gui.App(win,url,title)
 
-        def windestroy():
-            webbrowser.open(url)
-            popup.destroy()
-
-        def wincancel():
-            popup.destroy()
-
-        lab = ttk.Label(popup, text='你將前往下列網址\n' + url)
-        lab.pack()
-        btn = ttk.Button(popup, text="Okay", command=windestroy)
-        btn.pack()
-        btn = ttk.Button(popup, text="Cancel", command=wincancel)
-        btn.pack()
-        popup.mainloop()
-
-    def clickLink1(self, event):
-        popup = tk.Toplevel(win)
-        popup.title('(已完成)詳細資訊')
+    def clickLink_deal(self, event):
         url = self.itemLists_Deals[self.lb1.curselection()[0]][1]
-
-        def windestroy():
-            webbrowser.open(url)
-            popup.destroy()
-
-        def wincancel():
-            popup.destroy()
-
-        lab = ttk.Label(popup, text='你將前往下列網址\n' + url)
-        lab.pack()
-        btn = ttk.Button(popup, text="Okay", command=windestroy)
-        btn.pack()
-        btn = ttk.Button(popup, text="Cancel", command=wincancel)
-        btn.pack()
-        popup.mainloop()
-
+        title = self.itemLists_Deals[self.lb1.curselection()[0]][0]
+        deal_time =self.itemLists_Deals[self.lb1.curselection()[0]][3]
+        detail_gui.App(win,url,title,deal_time)
+        
     # //MARK: Button_GUI
     def button(self):
         global img_icon_ana
