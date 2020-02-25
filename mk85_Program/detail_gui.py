@@ -23,56 +23,106 @@ class App_start:
         self.packSpace()
 
     def label(self):
-        self.lab = ttk.Label(self.popup, image=self.img)
-        self.lab_detail = ttk.Label(self.popup, text='賣家留言:'
-                                    + self.datas[index(self.datas, 0)])
-        self.lab_goodsNum = ttk.Label(self.popup, text=index(self.datas, 1)
-                                      + self.datas[index(self.datas, 1)])
+        self.lab = ttk.Label(self.popup,
+                             image=self.img,
+                             relief='groove'
+                             )
+
+        self.lab_detail = tk.Label(self.popup,
+                                   text='賣家留言:\n' +
+                                   self.datas[index(self.datas, 0)],
+                                   anchor='nw',
+                                   height=28,
+                                   width=25,
+                                   bg='white',
+                                   justify='left',
+                                   relief='solid',
+                                   wraplength=160
+                                   )
+        self.lab_goodsNum = ttk.Label(self.popup,
+                                      text=index(self.datas, 1) +
+                                      self.datas[index(self.datas, 1)],
+                                      anchor='nw',
+                                      justify='left'
+                                      )
 
         if self.deal_time == None:
-            self.lab_time = ttk.Label(self.popup, text=index(self.datas, 2)
-                                      + self.datas[index(self.datas, 2)])
+            self.lab_time = ttk.Label(self.popup,
+                                      text=index(self.datas, 2) +
+                                      self.datas[index(self.datas, 2)],
+                                      anchor='nw',
+                                      justify='left'
+                                      )
         else:
             self.lab_time = ttk.Label(
-                self.popup, text='成交時間: ' + self.deal_time[0] + ' ' + self.deal_time[1])
+                self.popup,
+                text='成交時間: ' + self.deal_time[0] + ' ' + self.deal_time[1],
+                anchor='nw',
+                justify='left'
+            )
 
-        self.lab_type = ttk.Label(self.popup, text=index(self.datas, 3)
-                                  + self.datas[index(self.datas, 3)])
-        self.lab_num = ttk.Label(self.popup, text=index(self.datas, 4)
-                                 + self.datas[index(self.datas, 4)])
-        self.lab_evaluation = ttk.Label(self.popup, text=index(self.datas, 5)
-                                        + self.datas[index(self.datas, 5)])
-        self.lab_percent = ttk.Label(self.popup, text=index(self.datas, 6)
-                                     + self.datas[index(self.datas, 6)])
-        self.lab_speed = ttk.Label(self.popup, text=index(self.datas, 7)
-                                   + self.datas[index(self.datas, 7)])
+        self.lab_type = ttk.Label(self.popup,
+                                  text=index(self.datas, 3) +
+                                  self.datas[index(self.datas, 3)],
+                                  anchor='nw',
+                                  justify='left'
+                                  )
+
+        self.lab_num = ttk.Label(self.popup,
+                                 text=index(self.datas, 4) + ' '+
+                                 self.datas[index(self.datas, 4)],
+                                 anchor='nw',
+                                 justify='left'
+                                 )
+
+        self.lab_evaluation = ttk.Label(self.popup,
+                                        text=index(self.datas, 5) + ' ' +
+                                        self.datas[index(self.datas, 5)],
+                                        anchor='nw',
+                                        justify='left'
+                                        )
+
+        self.lab_percent = ttk.Label(self.popup,
+                                     text=index(self.datas, 6) + ' ' +
+                                     self.datas[index(self.datas, 6)],
+                                     anchor='nw',
+                                     justify='left'
+                                     )
+
+        self.lab_speed = ttk.Label(self.popup,
+                                   text=index(self.datas, 7) +
+                                   self.datas[index(self.datas, 7)],
+                                   anchor='nw',
+                                   justify='left'
+                                   )
 
     def button(self):
         self.btn_ok = ttk.Button(
-            self.popup, text="Okay", command=self.windestroy)
-        self.btn_can = ttk.Button(
-            self.popup, text="Cancel", command=self.wincancel)
+            self.popup, text="打開頁面", command=self.windestroy)
+        # self.btn_can = ttk.Button(
+        #     self.popup, text="Cancel", command=self.wincancel)
 
     def packSpace(self):
-        self.lab.pack()
-        self.lab_detail.pack(side='right')
-        self.lab_goodsNum.pack()
-        self.lab_time.pack()
-        self.lab_type.pack()
-        self.lab_num.pack()
-        self.lab_evaluation.pack()
-        self.lab_percent.pack()
-        self.lab_speed.pack()
+        self.lab.grid(row=0, column=0, padx=5, pady=5, sticky='nw')
+        self.lab_detail.grid(row=0, rowspan=10, column=1,
+                             padx=5, pady=5, sticky='nw')
+        self.lab_goodsNum.grid(row=1, column=0, padx=5, sticky='nw')
+        self.lab_time.grid(row=2, column=0, padx=5, sticky='nw')
+        self.lab_type.grid(row=3, column=0, padx=5, sticky='nw')
+        self.lab_num.grid(row=4, column=0, padx=5, sticky='nw')
+        self.lab_evaluation.grid(row=5, column=0, padx=5, sticky='nw')
+        self.lab_percent.grid(row=6, column=0, padx=5, sticky='nw')
+        self.lab_speed.grid(row=7, column=0, padx=5, sticky='nw')
 
-        self.btn_ok.pack()
-        self.btn_can.pack()
+        self.btn_ok.grid(row=9, column=0, padx=5)
+        # self.btn_can.grid(row = 9, column = 1, padx=5, sticky= 'nw')
 
     def windestroy(self):
         webbrowser.open(self.url)
         self.popup.destroy()
 
-    def wincancel():
-        self.popup.destroy()
+    # def wincancel():
+    #     self.popup.destroy()
 
 
 def index(dictionary, i):
@@ -188,7 +238,6 @@ def App(win, url, title, deal_time=None):
         speed.append(point.text.strip().split('/')[0].replace('(', '') + '/5')
         datas[speed[0]] = speed[1]
 
-
     # 圖片下載
     try:
         # 抓圖
@@ -197,7 +246,7 @@ def App(win, url, title, deal_time=None):
         urlretrieve(img, 'mk85_Program\src\image\image.png')
         img_path = join(CURRENT_DIR, './src/image/image.png')
         src_image = {'img': ImageTk.PhotoImage(
-            Image.open(img_path).resize((250, 250)))}
+            Image.open(img_path))}
     except:
         noimg_path = join(CURRENT_DIR, './src/image/noimage.png')
         src_image = {'img': ImageTk.PhotoImage(
@@ -214,4 +263,7 @@ def App(win, url, title, deal_time=None):
 
 
 if __name__ == '__main__':
-    App()
+    win = tk.Tk()
+    url = 'https://www.8591.com.tw/mallList-wareDetail.html?id=2357213469'
+    title = '123'
+    App(win, url, title)

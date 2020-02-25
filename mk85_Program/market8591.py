@@ -7,6 +7,8 @@ import getproxy
 import changeproxy
 import detail_gui
 import tkinter as tk
+import matplotlib.pyplot as plt
+from datetime import datetime
 from tkinter import StringVar, ttk
 from tkinter import messagebox as mb
 from PIL import ImageTk, Image
@@ -321,7 +323,7 @@ class App_start:
         self.bn_down.place(x=900, y=420)
 
     def bind_ana_Enter(self, bind):
-        self.btnAna = tk.Label(canvas,
+        self.bnAna = tk.Label(canvas,
                                text='分析價格',
                                font=('標楷體', 14),
                                width=8,
@@ -329,10 +331,10 @@ class App_start:
                                bg='Pink',
                                fg='MidnightBlue'
                                )
-        self.btnAna.place(x=900, y=450)
+        self.bnAna.place(x=900, y=450)
 
     def bind_proxy_Enter(self, bind):
-        self.btnProxy = tk.Label(canvas,
+        self.bnProxy = tk.Label(canvas,
                                  text='取得代理',
                                  font=('標楷體', 14),
                                  width=8,
@@ -340,7 +342,7 @@ class App_start:
                                  bg='Pink',
                                  fg='MidnightBlue'
                                  )
-        self.btnProxy.place(x=900, y=500)
+        self.bnProxy.place(x=900, y=500)
 
     def bind_up_Leave(self, bind):
         self.bn_up.place_forget()
@@ -349,10 +351,10 @@ class App_start:
         self.bn_down.place_forget()
 
     def bind_ana_Leave(self, bind):
-        self.btnAna.place_forget()
+        self.bnAna.place_forget()
 
     def bind_proxy_Leave(self, bind):
-        self.btnProxy.place_forget()
+        self.bnProxy.place_forget()
 
     # button active/disabled
     def btn_show(self):
@@ -438,8 +440,6 @@ class App_start:
         else:
             log('沒有人在買賣喔')
             self.btn_show()
-            self.btnAna.config(state='active')
-            self.btnUp.config(state='active')
 
     def btn_sort_up(self):
         a = []
@@ -479,7 +479,15 @@ class App_start:
 
     # //MARK: analytics popup
     def btn_analytics(self):
-        pass
+        mon = []
+        date = []
+        # 利用datetime來排序時間前後
+        date_sort = sorted(self.itemLists_Deals, key=lambda date: datetime.strptime(date[3][0], r'%m/%d'))
+        for itemLists_Deal in date_sort:
+            mon.append(int(itemLists_Deal[2][:-1].replace(',', '')))
+            date.append(itemLists_Deal[3][0])
+        plt.plot(date,mon)
+        plt.show()
     
     # //MARK: GetProxy popup
     def btn_GetProxy(self):
