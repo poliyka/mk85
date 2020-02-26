@@ -179,12 +179,19 @@ def App(win, url, title, deal_time=None):
         datas[percent[0]] = percent[1]
 
         # 交易速度
-        speed = []
-        font = lis[2].find('font', class_='tdbLeft')
-        speed.append(font.text.strip())
-        point = lis[2].find(id='font-color')
-        speed.append(point.text.strip()+'/5')
+        try:
+            speed = []
+            font = lis[2].find('font', class_='tdbLeft')
+            speed.append(font.text.strip())
+            point = lis[2].find(id='font-color')
+            speed.append(point.text.strip()+'/5')
+        except:
+            font = lis[2].find('span')
+            speed = font.text.strip().split(':')
+            speed = [speed[0]+': ',speed[1]]
+            
         datas[speed[0]] = speed[1]
+
 
     else:
         # 詳細說明
@@ -243,14 +250,13 @@ def App(win, url, title, deal_time=None):
         # 抓圖
         pic = soup.find('img', class_='ware-pic')
         img = 'https:' + pic['src']
-        urlretrieve(img, 'mk85_Program\src\image\image.png')
         img_path = join(CURRENT_DIR, './src/image/image.png')
-        src_image = {'img': ImageTk.PhotoImage(
-            Image.open(img_path))}
-    except:
+        urlretrieve(img, img_path)
+        src_image = ImageTk.PhotoImage(Image.open(img_path))
+    except Exception as err:
+        print(err)
         noimg_path = join(CURRENT_DIR, './src/image/noimage.png')
-        src_image = {'img': ImageTk.PhotoImage(
-            Image.open(noimg_path).resize((250, 250)))}
+        src_image = ImageTk.PhotoImage(Image.open(noimg_path).resize((250, 250)))
 
     popup = tk.Toplevel(win)
     if deal_time == None:
@@ -258,7 +264,7 @@ def App(win, url, title, deal_time=None):
     else:
         popup.title('(已交易)'+title)
 
-    App_start(popup, url, datas, src_image['img'], deal_time)
+    App_start(popup, url, datas, src_image, deal_time)
     popup.mainloop()
 
 

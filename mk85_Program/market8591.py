@@ -486,7 +486,11 @@ class App_start:
         for itemLists_Deal in date_sort:
             mon.append(int(itemLists_Deal[2][:-1].replace(',', '')))
             date.append(itemLists_Deal[3][0])
-        plt.plot(date,mon)
+        plt.plot(date,mon,'r--o',label='Item_name')
+        plt.xlabel('Price')
+        plt.ylabel('Date')
+        plt.title('Date/Price')
+        plt.legend()
         plt.show()
     
     # //MARK: GetProxy popup
